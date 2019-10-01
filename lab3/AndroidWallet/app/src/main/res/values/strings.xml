@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">AndroidWallet</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_delete_all">Delete All</string>
+    <string name="income">INCOME</string>
+    <string name="expense">EXPENSE</string>
+    <string name="save">Save</string>
+    <string name="warn_message">Warning: Name our amount is empty!</string>
 </resources>
