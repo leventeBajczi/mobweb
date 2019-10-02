@@ -4,5 +4,7 @@
     <string name="income">INCOME</string>
     <string name="expense">EXPENSE</string>
     <string name="save">Save</string>
-    <string name="warn_message">Warning: Name our amount is empty!</string>
+    <string name="warn_message">Name our amount is empty!</string>
+    <string name="form_name">Expense/Income name</string>
+    <string name="form_amount">Expense/Income amount</string>
 </resources>

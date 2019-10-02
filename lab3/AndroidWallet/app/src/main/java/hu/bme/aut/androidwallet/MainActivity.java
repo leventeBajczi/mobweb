@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private Button saveButton;
     private LinearLayout listOfRows;
     private LayoutInflater inflater;
+    private TextView sumTxt;
+
+    private int sum = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,23 +43,31 @@ public class MainActivity extends AppCompatActivity {
         typeChooserButton = findViewById(R.id.expense_or_income);
         saveButton = findViewById(R.id.save_button);
         listOfRows = findViewById(R.id.list_of_rows);
+        sumTxt = findViewById(R.id.sum);
 
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (nameEditText.getText().toString().isEmpty() || amountEditText.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this, R.string.warn_message, Toast.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.root_layout), R.string.warn_message, Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 View rowItem = inflater.inflate(R.layout.salary_row, null);
                 ImageView icon = rowItem.findViewById(R.id.salary_direction_icon);
                 TextView rowItemSalaryName = rowItem.findViewById(R.id.row_salary_name);
                 TextView rowItemSalaryAmount = rowItem.findViewById(R.id.row_salary_amount);
-                icon.setImageResource(typeChooserButton.isChecked() ? R.drawable.expense : R.drawable.income);
+
+                boolean expense = typeChooserButton.isChecked();
+                icon.setImageResource(expense ? R.drawable.expense : R.drawable.income);
                 rowItemSalaryName.setText(nameEditText.getText().toString());
-                rowItemSalaryAmount.setText(amountEditText.getText().toString());
+
+                final String amount = amountEditText.getText().toString();
+                rowItemSalaryAmount.setText(amount);
                 listOfRows.addView(rowItem);
+
+                sum += expense ? -1 * Integer.parseInt(amount) : Integer.parseInt(amount);
+                sumTxt.setText(Integer.toString(sum));
             }
         });
     }
@@ -74,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_delete_all) {
             listOfRows.removeAllViews();
+            sum = 0;
+            sumTxt.setText("");
             return true;
         }
 
