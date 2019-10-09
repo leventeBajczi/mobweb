@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">WorkplaceApp</string>
+    <string name="email">Email:</string>
+    <string name="name">Name:</string>
+    <string name="address">Address:</string>
+    <string name="payment">Payment</string>
+    <string name="holiday">Holiday</string>
+    <string name="profile">Profile</string>
+    <string name="cafeteria">Cafeteria</string>
+    <string name="error_past_holiday">You can\'t take out a holiday in the past!</string>
+</resources>
