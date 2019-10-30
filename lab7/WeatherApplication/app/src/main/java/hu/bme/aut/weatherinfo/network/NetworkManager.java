@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkManager {
 
     private static final String SERVICE_URL = "https://api.openweathermap.org";
-    private static final String APP_ID = "626880523dd6bc9317c4ba667f7e5a58";
+    private static final String APP_ID = "73cab139074cba9b2c176650533eb97d";
 
     private static NetworkManager instance;
 
