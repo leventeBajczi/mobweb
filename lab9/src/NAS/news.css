@@ -2,10 +2,12 @@
     display: inline-block;
     height: 80px;
     margin-block-start: 25px;
+    width: calc(100% - 80px - 15px);
 }
 
-.author-profile-picture {
+.news-item>.author-profile-picture {
     padding-inline-end: 10px;
+    margin-block-start: 25px;
 }
 
 .news-item>header>h1 {
@@ -19,9 +21,9 @@
     font-size: large;
 }
 
-.news-item .publish-date {
+.publish-date {
     font-style: italic;
-    font-size: small;
+    font-size: x-small;
     color: gray;
 }
 
@@ -32,4 +34,58 @@
 
 div.images {
     text-align: center;
+}
+
+main {
+    width: calc(100% - 350px);
+    display: inline-block;
+}
+
+aside {
+    display: inline-block;
+    width: 350px;
+    height: calc(100% - 60px);
+    background-color: rgb(230, 230, 230);
+    position: absolute;
+    overflow: auto;
+    }
+
+article.proposed-item {
+    border-bottom-style: solid;
+    border-bottom-color: rgb(100, 100, 100);
+    border-bottom-width: 1px;
+    margin: 16px;
+}
+
+article.proposed-item:last-child {
+    border-bottom-style: none;
+}
+
+.proposed-item>header {
+    display: inline-block;
+    height: 60px;
+    width: calc(100% - 60px - 10px - 2*16px);
+    font-size: small;
+}
+
+.proposed-item>.author-profile-picture {
+    padding-inline-end: 10px;
+}
+
+.proposed-item>header>h3 {
+    margin-block-start: 5px;
+    margin-block-end: 10px;
+}
+
+.proposed-item .publish-date {
+    font-size: x-small;
+}
+
+@media( max-width: 900px ) {
+    aside {
+        display: none;
+    }
+    main {
+        width: 100%;
+    }
 }

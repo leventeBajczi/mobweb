@@ -37,6 +37,6 @@ body>.container {
     font-size: 1.1em;
 }
 
-.page-header li:hover {
+.page-header li:hover, .btn-login:hover{
     background-color: rgb(110, 0, 0);
 }
