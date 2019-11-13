@@ -7,6 +7,10 @@
     z-index: 1;
 }
 
+body>.container {
+    padding-block-start: 60px;
+}
+
 .page-header a {
     color: inherit;
 }

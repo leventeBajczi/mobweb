@@ -1,0 +1,35 @@
+.news-item>header {
+    display: inline-block;
+    height: 80px;
+    margin-block-start: 25px;
+}
+
+.author-profile-picture {
+    padding-inline-end: 10px;
+}
+
+.news-item>header>h1 {
+    margin-block-start: 10px;
+    margin-block-end: 5px;
+    font-size: xx-large;
+}
+.news-item .name {
+    margin-block-end: 5px;
+    font-weight: bold;
+    font-size: large;
+}
+
+.news-item .publish-date {
+    font-style: italic;
+    font-size: small;
+    color: gray;
+}
+
+.news-item p {
+    padding: 16px;
+    margin: 0px;
+}
+
+div.images {
+    text-align: center;
+}
