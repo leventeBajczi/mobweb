@@ -9,6 +9,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+               cppFlags "-DVIXL_INCLUDE_SIMULATOR_AARCH64", "-DVIXL_CODE_BUFFER_MALLOC"
+            }
+        }
+
     }
     buildTypes {
         release {
