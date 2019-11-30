@@ -39,8 +39,8 @@ public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmt
     private final Map<VarDecl<?>, Integer> lut;
     private final MutableValuation mutableValuation;
 
-    public XcfaStmtVisitor(Map<VarDecl<?>, Integer> lut) {
-        jniCompat = new JniCompat();
+    public XcfaStmtVisitor(Map<VarDecl<?>, Integer> lut, JniCompat jniCompat) {
+        this.jniCompat = jniCompat;
         this.lut = new HashMap<>(lut);
         mutableValuation = new MutableValuation();
     }
@@ -130,8 +130,7 @@ public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmt
 
     @Override
     public String visit(AssumeStmt assumeStmt, XCFA.Process.Procedure.Edge edge) {
-        jniCompat.tst(getString(assumeStmt.getCond()));
-        jniCompat.jnz(edge.getTarget().getName());
+        jniCompat.branch(getString(assumeStmt.getCond()), edge.getTarget().getName());
         return "";
     }
 

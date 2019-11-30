@@ -33,15 +33,15 @@ public class XcfaAbstraction {
         for(VarDecl<?> v : xcfa.getVars()) {
             lut.put(v, lut.size());
         }
+        JniCompat jniCompat = new JniCompat();
         for (XCFA.Process process : xcfa.getProcesses()) {
             for (XCFA.Process.Procedure procedure : process.getProcedures()) {
-                XcfaStmtVisitor visitor = new XcfaStmtVisitor(lut);
+                XcfaStmtVisitor visitor = new XcfaStmtVisitor(lut, jniCompat);
                 for (XCFA.Process.Procedure.Edge edge : procedure.getEdges()) {
                     for(Stmt stmt : edge.getStmts()) {
                         stmt.accept(visitor, edge);
                     }
                 }
-                System.err.println("==============");
             }
         }
 
