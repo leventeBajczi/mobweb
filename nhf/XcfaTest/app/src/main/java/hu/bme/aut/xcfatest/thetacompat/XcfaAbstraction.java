@@ -30,7 +30,7 @@ public class XcfaAbstraction {
             for (XCFA.Process.Procedure procedure : process.getProcedures()) {
                 for (XCFA.Process.Procedure.Edge edge : procedure.getEdges()) {
                     for(Stmt stmt : edge.getStmts()) {
-                        stmt.accept(XcfaStmtVisitor.getVisitor(), 0);
+                        stmt.accept(XcfaStmtVisitor.getVisitor(), edge);
                     }
                 }
             }

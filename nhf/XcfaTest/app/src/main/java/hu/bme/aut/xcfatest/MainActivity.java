@@ -29,15 +29,15 @@ public class MainActivity extends AppCompatActivity {
             "        loc L1\n" +
             "        loc L2\n" +
             "        loc L3\n" +
+            "        loc L4\n" +
             "        final loc END\n" +
             "        error loc ERR\n" +
             "\n" +
             "        L0 -> L1 { x := 1 }\n" +
-            "        L1 -> L2 { assume x < 5 }\n" +
-            "        L1 -> L3 { assume not (x < 5) }\n" +
-            "        L2 -> L1 { x := (- y) }\n" +
-            "        L3 -> END { assume x <= 5 }\n" +
-            "        L3 -> ERR { assume not (x <= 5) }\n" +
+            "        L1 -> L2 { x -> y atomic @relaxed }\n" +
+            "        L2 -> L3 { x <- y atomic @relaxed }\n" +
+            "        L4 -> END { assume x = 1 }\n" +
+            "        L4 -> ERR { assume not (x = 1) }\n" +
             "    }\n" +
             "}\n";
 
