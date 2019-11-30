@@ -22,9 +22,26 @@ public class MainActivity extends AppCompatActivity {
 
     private static String sampleXcfa = "" +
             "var x : int\n" +
-            "var y : int\n" +
             "main process mainProcess {\n" +
             "    main procedure mainProcedure() {\n" +
+            "        var a : int\n" +
+            "        var b : int\n" +
+            "        init loc L0\n" +
+            "        loc L1\n" +
+            "        loc L2\n" +
+            "        loc L3\n" +
+            "        final loc END\n" +
+            "\n" +
+            "        L0 -> L1  { a := 1 }\n" +
+            "        L1 -> L2  { b := 2 }\n" +
+            "        L2 -> L3  { a -> x atomic @relaxed }\n" +
+            "        L3 -> END { b -> x atomic @relaxed }\n" +
+            "    }\n" +
+            "}\n" +
+            "process secondProcess{\n" +
+            "    main procedure mainProcedure() {\n" +
+            "        var a : int\n" +
+            "        var b : int\n" +
             "        init loc L0\n" +
             "        loc L1\n" +
             "        loc L2\n" +
@@ -33,19 +50,14 @@ public class MainActivity extends AppCompatActivity {
             "        final loc END\n" +
             "        error loc ERR\n" +
             "\n" +
-            "        L0 -> L1 { x := 1 }\n" +
-            "        L1 -> L2 { x -> y atomic @relaxed }\n" +
-            "        L2 -> L3 { x <- y atomic @relaxed }\n" +
-            "        L4 -> END { assume x = 1 }\n" +
-            "        L4 -> ERR { assume not (x = 1) }\n" +
+            "        L0 -> L1 { a := 0 }\n" +
+            "        L1 -> L2 { b := 0 }\n" +
+            "        L2 -> L3 { a <- x atomic @relaxed }\n" +
+            "        L3 -> L4 { b <- x atomic @relaxed }\n" +
+            "        L4 -> ERR { assume ( (a - b) = 1 ) }\n" +
+            "        L4 -> END { assume not ( (a - b) = 1 ) }\n" +
             "    }\n" +
             "}\n";
-
-    static {
-        System.loadLibrary("xcfa");
-    }
-
-    public native String textFromNative();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, textFromNative(), Snackbar.LENGTH_LONG)
+        fab.setOnClickListener(view -> Snackbar.make(view, "", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
     }
 

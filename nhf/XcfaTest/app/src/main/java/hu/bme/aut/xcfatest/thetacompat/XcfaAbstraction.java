@@ -2,8 +2,11 @@ package hu.bme.aut.xcfatest.thetacompat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import hu.bme.aut.xcfatest.thetacompat.visitor.XcfaStmtVisitor;
+import hu.bme.mit.theta.core.decl.VarDecl;
 import hu.bme.mit.theta.core.stmt.Stmt;
 import hu.bme.mit.theta.xcfa.XCFA;
 import hu.bme.mit.theta.xcfa.dsl.XcfaDslManager;
@@ -26,13 +29,19 @@ public class XcfaAbstraction {
     }
 
     public void serialize() {
+        Map<VarDecl<?>, Integer> lut = new HashMap<>();
+        for(VarDecl<?> v : xcfa.getVars()) {
+            lut.put(v, lut.size());
+        }
         for (XCFA.Process process : xcfa.getProcesses()) {
             for (XCFA.Process.Procedure procedure : process.getProcedures()) {
+                XcfaStmtVisitor visitor = new XcfaStmtVisitor(lut);
                 for (XCFA.Process.Procedure.Edge edge : procedure.getEdges()) {
                     for(Stmt stmt : edge.getStmts()) {
-                        stmt.accept(XcfaStmtVisitor.getVisitor(), edge);
+                        stmt.accept(visitor, edge);
                     }
                 }
+                System.err.println("==============");
             }
         }
 
