@@ -7,11 +7,14 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.view.View;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
+import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
 import hu.bme.mit.theta.xcfa.XCFA;
 import hu.bme.mit.theta.xcfa.dsl.XcfaDslManager;
 
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static String sampleXcfa = "" +
             "var x : int\n" +
+            "var y : int\n" +
             "main process mainProcess {\n" +
             "    main procedure mainProcedure() {\n" +
             "        init loc L0\n" +
@@ -28,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
             "        final loc END\n" +
             "        error loc ERR\n" +
             "\n" +
-            "        L0 -> L1 { x := 0 }\n" +
+            "        L0 -> L1 { x := 1 }\n" +
             "        L1 -> L2 { assume x < 5 }\n" +
             "        L1 -> L3 { assume not (x < 5) }\n" +
-            "        L2 -> L1 { x := x + 1 }\n" +
+            "        L2 -> L1 { x := (- y) }\n" +
             "        L3 -> END { assume x <= 5 }\n" +
             "        L3 -> ERR { assume not (x <= 5) }\n" +
             "    }\n" +
@@ -49,12 +53,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        XCFA xcfa;
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
         try {
-            xcfa = XcfaDslManager.createXcfa(sampleXcfa);
+            XcfaAbstraction xcfaAbstraction = XcfaAbstraction.fromString(sampleXcfa);
+            xcfaAbstraction.serialize();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NoSuchElementException e) {
+            Snackbar.make(coordinatorLayout, "Xcfa is not deterministic, it would use resident garbage.", Snackbar.LENGTH_LONG).show();
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);
