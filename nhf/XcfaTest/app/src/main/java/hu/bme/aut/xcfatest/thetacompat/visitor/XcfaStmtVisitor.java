@@ -33,11 +33,15 @@ import hu.bme.mit.theta.core.type.inttype.IntExprs;
 import hu.bme.mit.theta.core.type.inttype.IntLitExpr;
 import hu.bme.mit.theta.xcfa.XCFA;
 
-public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmtVisitor<XCFA.Process.Procedure.Edge, String> {
+public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmtVisitor<XCFA.Process.Procedure.Edge, Boolean> {
 
     private final JniCompat jniCompat;
     private final Map<VarDecl<?>, Integer> lut;
     private final MutableValuation mutableValuation;
+
+    public Map<VarDecl<?>, Integer> getLut() {
+        return lut;
+    }
 
     public XcfaStmtVisitor(Map<VarDecl<?>, Integer> lut, JniCompat jniCompat) {
         this.jniCompat = jniCompat;
@@ -46,40 +50,39 @@ public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmt
     }
 
     @Override
-    public String visit(XcfaCallStmt xcfaCallStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(XcfaCallStmt xcfaCallStmt, XCFA.Process.Procedure.Edge edge) {
         System.err.println("XcfaCallStmt not implemented!");
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(StoreStmt storeStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(StoreStmt storeStmt, XCFA.Process.Procedure.Edge edge) {
         if(!lut.containsKey(storeStmt.getRhs())) lut.put(storeStmt.getRhs(), lut.size());
         //noinspection ConstantConditions
         int regnum = lut.get(storeStmt.getRhs());
+        int source;
         Optional<? extends LitExpr<?>> opt = mutableValuation.eval(storeStmt.getLhs());
         if(!opt.isPresent() && lut.get(storeStmt.getLhs()) == null) throw new NoSuchElementException();
         if(opt.isPresent()) {
-            switch(storeStmt.getOrdering()) {
-                case "relaxed": jniCompat.strLit(((IntLitExpr)opt.get()).getValue(), regnum); break;
-                case "acq_rel":
-                case "release": jniCompat.stlrLit(((IntLitExpr)opt.get()).getValue(), regnum); break;
-                case "seq_cst": jniCompat.stxrLit(((IntLitExpr)opt.get()).getValue(), regnum); break;
-            }
+            int val = ((IntLitExpr)opt.get()).getValue();
+            jniCompat.movLit(lut.size(), val);
+            source = lut.size();
         }
         else {
-            switch(storeStmt.getOrdering()) {
-                case "relaxed": jniCompat.str(lut.get(storeStmt.getLhs()), regnum); break;
+            source = lut.get(storeStmt.getLhs());
+        }
+        switch(storeStmt.getOrdering()) {
+                case "relaxed": jniCompat.str(source, regnum); break;
                 case "acq_rel":
-                case "release": jniCompat.stlr(lut.get(storeStmt.getLhs()), regnum); break;
-                case "seq_cst": jniCompat.stxr(lut.get(storeStmt.getLhs()), regnum); break;
-            }
+                case "release": jniCompat.stlr(source, regnum); break;
+                case "seq_cst": jniCompat.stxr(source, regnum); break;
         }
 
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(LoadStmt loadStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(LoadStmt loadStmt, XCFA.Process.Procedure.Edge edge) {
         mutableValuation.remove(loadStmt.getLhs());
         if(!lut.containsKey(loadStmt.getLhs())) lut.put(loadStmt.getLhs(), lut.size());
         //noinspection ConstantConditions
@@ -90,52 +93,52 @@ public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmt
             case "acquire": jniCompat.ldar(regnum, lut.get(loadStmt.getRhs())); break;
             case "seq_cst": jniCompat.ldxr(regnum, lut.get(loadStmt.getRhs())); break;
         }
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(AtomicBeginStmt atomicBeginStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(AtomicBeginStmt atomicBeginStmt, XCFA.Process.Procedure.Edge edge) {
         System.err.println("AtomicBeginStmt not implemented!");
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(AtomicEndStmt atomicEndStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(AtomicEndStmt atomicEndStmt, XCFA.Process.Procedure.Edge edge) {
         System.err.println("AtomicEndStmt not implemented!");
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(NotifyAllStmt notifyAllStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(NotifyAllStmt notifyAllStmt, XCFA.Process.Procedure.Edge edge) {
         System.err.println("NotifyAllStmt not implemented!");
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(NotifyStmt notifyStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(NotifyStmt notifyStmt, XCFA.Process.Procedure.Edge edge) {
         System.err.println("NotifyStmt not implemented!");
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(WaitStmt waitStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(WaitStmt waitStmt, XCFA.Process.Procedure.Edge edge) {
         System.err.println("WaitStmt not implemented!");
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(SkipStmt skipStmt, XCFA.Process.Procedure.Edge edge) {
-        return "";
+    public Boolean visit(SkipStmt skipStmt, XCFA.Process.Procedure.Edge edge) {
+        return false;
     }
 
     @Override
-    public String visit(AssumeStmt assumeStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(AssumeStmt assumeStmt, XCFA.Process.Procedure.Edge edge) {
         jniCompat.branch(getString(assumeStmt.getCond()), edge.getTarget().getName());
-        return "";
+        return true;
     }
 
     @Override
-    public <DeclType extends Type> String visit(AssignStmt<DeclType> assignStmt, XCFA.Process.Procedure.Edge edge) {
+    public <DeclType extends Type> Boolean visit(AssignStmt<DeclType> assignStmt, XCFA.Process.Procedure.Edge edge) {
         Expr<DeclType> expr = assignStmt.getExpr();
         VarDecl<?> varDecl = assignStmt.getVarDecl();
         if (isEvaluable(expr)) mutableValuation.put(assignStmt.getVarDecl(), expr.eval(mutableValuation));
@@ -146,7 +149,7 @@ public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmt
             jniCompat.mov(regnum,
                     getString(expr));
         }
-        return "";
+        return false;
     }
 
     private <DeclType extends Type> int getString(Expr<DeclType> expr) {
@@ -209,14 +212,14 @@ public class XcfaStmtVisitor implements hu.bme.mit.theta.core.stmt.xcfa.XcfaStmt
     }
 
     @Override
-    public <DeclType extends Type> String visit(HavocStmt<DeclType> havocStmt, XCFA.Process.Procedure.Edge edge) {
+    public <DeclType extends Type> Boolean visit(HavocStmt<DeclType> havocStmt, XCFA.Process.Procedure.Edge edge) {
         System.err.println("Havoc not implemented! Using constant 0.");
         mutableValuation.put(havocStmt.getVarDecl(), IntExprs.Int(0));
-        return "";
+        return false;
     }
 
     @Override
-    public String visit(XcfaStmt xcfaStmt, XCFA.Process.Procedure.Edge edge) {
+    public Boolean visit(XcfaStmt xcfaStmt, XCFA.Process.Procedure.Edge edge) {
         return xcfaStmt.accept(this, edge);
     }
 }

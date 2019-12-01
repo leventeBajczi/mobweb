@@ -7,7 +7,6 @@ public class JniCompat {
     }
 
     public JniCompat(){
-        deinitVixl();
         initVixl();
     }
 
@@ -17,37 +16,35 @@ public class JniCompat {
 
     public native void bindLabel(String label);
 
+    public native void addGlobal(int reg);
+
     public native void run();
 
     private native void initVixl();
 
-    private native void deinitVixl();
+    public native void newProcess();
 
-    public native void calcBinary(int i, int i1, String operatorLabel, int string) ;
+    public native void calcBinary(int d, int s1, String operatorLabel, int s2) ;
 
-    public native void calcUnary(int depth, String operatorLabel, int string) ;
+    public native void calcUnary(int d, String operatorLabel, int s) ;
 
-    public native void mov(int depth, int integer) ;
+    public native void mov(int d, int s) ;
 
-    public native void movLit(int depth, int i) ;
+    public native void movLit(int d, int val) ;
 
-    public native void branch(int reg, String name) ;
+    public native void branch(int reg, String label) ;
 
-    public native void ldr(int regnum, int integer) ;
+    public native void ldr(int d, int s) ;
 
-    public native void ldar(int regnum, int integer) ;
+    public native void ldar(int d, int s) ;
 
-    public native void ldxr(int regnum, int integer) ;
+    public native void ldxr(int d, int s) ;
 
-    public native void strLit(int value, int regnum) ;
+    public native void str(int s, int d) ;
 
-    public native void stlrLit(int value, int regnum) ;
+    public native void stlr(int s, int d) ;
 
-    public native void stxrLit(int value, int regnum) ;
+    public native void stxr(int s, int d) ;
 
-    public native void str(int integer, int regnum) ;
-
-    public native void stlr(int integer, int regnum) ;
-
-    public native void stxr(int integer, int regnum) ;
+    public native void ret();
 }

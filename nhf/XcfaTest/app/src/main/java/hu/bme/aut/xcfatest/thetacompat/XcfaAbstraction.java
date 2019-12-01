@@ -3,6 +3,7 @@ package hu.bme.aut.xcfatest.thetacompat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import hu.bme.aut.xcfatest.thetacompat.visitor.XcfaStmtVisitor;
@@ -28,23 +29,40 @@ public class XcfaAbstraction {
         return new XcfaAbstraction(xcfa);
     }
 
-    public void serialize() {
+    public void run() {
+        JniCompat jniCompat = new JniCompat();
         Map<VarDecl<?>, Integer> lut = new HashMap<>();
         for(VarDecl<?> v : xcfa.getVars()) {
             lut.put(v, lut.size());
         }
-        JniCompat jniCompat = new JniCompat();
         for (XCFA.Process process : xcfa.getProcesses()) {
+            jniCompat.newProcess();
             for (XCFA.Process.Procedure procedure : process.getProcedures()) {
+                for(XCFA.Process.Procedure.Location loc : procedure.getLocs()) {
+                    jniCompat.addLabel(loc.getName());
+                }
                 XcfaStmtVisitor visitor = new XcfaStmtVisitor(lut, jniCompat);
-                for (XCFA.Process.Procedure.Edge edge : procedure.getEdges()) {
-                    for(Stmt stmt : edge.getStmts()) {
-                        stmt.accept(visitor, edge);
+                List<XCFA.Process.Procedure.Edge> edges = procedure.getEdges();
+                for (int i = 0; i < edges.size(); i++) {
+                    XCFA.Process.Procedure.Edge edge = edges.get(i);
+                    jniCompat.bindLabel(edge.getSource().getName());
+                    boolean branched = false;
+                    for (Stmt stmt : edge.getStmts()) {
+                        if (stmt.accept(visitor, edge)) branched = true;
+                    }
+                    if (!branched && (i == edges.size()-1 || edge.getTarget() != edges.get(i+1).getSource())) {
+                        jniCompat.movLit(visitor.getLut().size(), 0);
+                        jniCompat.branch(visitor.getLut().size(), edge.getTarget().getName());
                     }
                 }
+                jniCompat.bindLabel(procedure.getFinalLoc().getName());
+                jniCompat.ret();
             }
         }
-
+        for(VarDecl<?> var : xcfa.getVars()) {
+            jniCompat.addGlobal(lut.get(var));
+        }
+        jniCompat.run();
     }
 
 }

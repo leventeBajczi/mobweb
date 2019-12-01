@@ -9,14 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
-import android.view.View;
-
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
-import hu.bme.mit.theta.xcfa.XCFA;
-import hu.bme.mit.theta.xcfa.dsl.XcfaDslManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
         try {
             XcfaAbstraction xcfaAbstraction = XcfaAbstraction.fromString(sampleXcfa);
-            xcfaAbstraction.serialize();
+            xcfaAbstraction.run();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchElementException e) {
