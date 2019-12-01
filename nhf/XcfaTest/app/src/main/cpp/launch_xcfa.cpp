@@ -138,7 +138,7 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_calcBinary(JNIEnv *env, jobject, 
     {
         case '+': __ Add(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Add %d, %d, %d", d, s1, s2); break;
         case '=': __ Sub(xLut(d), xLut(s1), xLut(s2)); __ Mov(xLut(s1), (uint64_t) 0), __ Cinv(xLut(d), xLut(s1), ne);
-        __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Sub %d, %d, %d", d, s1, s2); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mov, %d, 0", s1); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cinv %d, %d ne", d, s1); break;
+        __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Sub %d, %d, %d", d, s1, s2); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mov, %d, imm0", s1); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cinv %d, %d ne", d, s1); break;
         case '-': __ Sub(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Sub %d, %d, %d", d, s1, s2); break;
         case '*': __ Mul(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mul %d, %d, %d", d, s1, s2); break;
         case '/': __ Sdiv(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Div %d, %d, %d", d, s1, s2); break;
@@ -156,6 +156,8 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_calcUnary(JNIEnv * env, jobject, 
     switch(chars[0])
     {
         case '-': __ Neg(xLut(d), xLut(s)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Neg %d, %d", d, s); break;
+        case 'n': __ Cmp(xLut(s), (uint64_t)0); __ Mov(xLut(s), (uint64_t) 0), __ Cinv(xLut(d), xLut(s), eq);
+            __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cmp %d, 0", s); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mov, %d, imm0", s); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cinv %d, %d eq", d, s); break;
         default: __ Neg(xLut(d), xLut(s)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Neg %d, %d", d, s); break;
     }
     if(isCopy) env->ReleaseStringUTFChars(operator_label, chars);

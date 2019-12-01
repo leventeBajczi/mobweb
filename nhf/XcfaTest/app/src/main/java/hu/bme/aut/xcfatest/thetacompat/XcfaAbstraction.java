@@ -14,23 +14,13 @@ import hu.bme.mit.theta.xcfa.dsl.XcfaDslManager;
 
 public class XcfaAbstraction {
     private final XCFA xcfa;
+    private final JniCompat jniCompat;
+    private final Map<XCFA.Process.Procedure, Map<VarDecl<?>, Integer>> regs = new HashMap<>();
+
 
     private XcfaAbstraction(XCFA xcfa) {
         this.xcfa = xcfa;
-    }
-
-    public static XcfaAbstraction fromStream(InputStream is) throws IOException {
-        XCFA xcfa = XcfaDslManager.createXcfa(is);
-        return new XcfaAbstraction(xcfa);
-    }
-
-    public static XcfaAbstraction fromString(String s) throws IOException {
-        XCFA xcfa = XcfaDslManager.createXcfa(s);
-        return new XcfaAbstraction(xcfa);
-    }
-
-    public void run() {
-        JniCompat jniCompat = new JniCompat();
+        jniCompat = new JniCompat();
         Map<VarDecl<?>, Integer> lut = new HashMap<>();
         for(VarDecl<?> v : xcfa.getVars()) {
             lut.put(v, lut.size());
@@ -57,12 +47,38 @@ public class XcfaAbstraction {
                 }
                 jniCompat.bindLabel(procedure.getFinalLoc().getName());
                 jniCompat.ret();
+                regs.put(procedure, visitor.getLut());
             }
         }
         for(VarDecl<?> var : xcfa.getVars()) {
             jniCompat.addGlobal(lut.get(var));
         }
+    }
+
+    public static XcfaAbstraction fromStream(InputStream is) throws IOException {
+        XCFA xcfa = XcfaDslManager.createXcfa(is);
+        return new XcfaAbstraction(xcfa);
+    }
+
+    public static XcfaAbstraction fromString(String s) throws IOException {
+        XCFA xcfa = XcfaDslManager.createXcfa(s);
+        return new XcfaAbstraction(xcfa);
+    }
+
+    public Map<XCFA.Process.Procedure, Map<String, Integer>> run() {
+        Map<XCFA.Process.Procedure, Map<String, Integer>> values = new HashMap<>();
         jniCompat.run();
+        for(XCFA.Process proc : xcfa.getProcesses()) {
+            for(XCFA.Process.Procedure procedure : proc.getProcedures()) {
+                Map<VarDecl<?>, Integer> procRegs = regs.get(procedure);
+                Map<String, Integer> procValues = new HashMap<>();
+                procRegs.forEach((varDecl, integer) -> {
+                    if(!xcfa.getVars().contains(varDecl)) procValues.put(varDecl.getName(), jniCompat.getRegisterValue(integer));
+                });
+                values.put(procedure, procValues);
+            }
+        }
+        return values;
     }
 
 }
