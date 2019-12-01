@@ -1,10 +1,5 @@
 package hu.bme.aut.xcfatest.thetacompat;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import hu.bme.mit.theta.core.decl.VarDecl;
-
 public class JniCompat {
 
     static {

@@ -124,7 +124,6 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_run(JNIEnv *, jobject) {
     {
         th.join();
     }
-    return;
 }
 
 extern "C"
