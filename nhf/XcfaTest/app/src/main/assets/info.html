@@ -1,0 +1,50 @@
+<h1>
+    What is this application?
+</h1>
+<p>
+    This application facilitates the testing of weak memory-related phenomena by running tests
+    described by an XCFA formalism and a test environment.
+</p>
+<h2>
+    How does this work?
+</h2>
+<p>
+    The XCFA formalism is parsed and an in-memory object is built representing it. Thereafter, this
+    model is compiled into bytecode by a JIT compiler using VIXL as its backend, which is then
+    executed concurrently and execution results are displayed to the user.
+</p>
+<h2>
+    What is an XCFA?
+</h2>
+<p>
+    XCFA is the abbreviation of eXtended Control Flow Automaton, and a formalism which represents a
+    program via a mathematical automaton. A normal CFA (Control Flow Automaton) is made up of labels
+    and edges: labels are locations in the program, and edges are transitions between these
+    locations. An XCFA is more than this in two fundamental ways: it is a collection of CFAs that
+    reside inside <i>procedures</i>, and these procedures are collected into <i>threads</i>. The
+    semantics of these elements correspond to those of the same elements in a programming language
+    such as C/C++ or Java.
+</p>
+<h2>
+    What is weak memory?
+</h2>
+<p>
+    Modern multicore processors (such as the one most likely in this device) employ such
+    optimizations while executing instructions that result in a different execution order than the
+    order of instructions in the binary. As the memory access time represents a huge bottleneck, a
+    buffer is used which is writable in a faster manner, and it will get flushed to memory while the
+    processor goes on to execute other instructions. In the case of <b>weak memory</b>, the only
+    barrier to this is a successive memory operation <i>to the same address</i>, or a <i>fence</i>
+    instruction. Most of the times this kind of optimization goes unnoticed, but sometimes the
+    programmer has to interface with it - e.g. when using a processor that has a <a
+        href="http://infocenter.arm.com/help/topic/com.arm.doc.uan0004a/UAN0004A_a9_read_read.pdf">known
+    fault</a>.
+</p>
+<h3>
+    I am interested. Where can I learn more?
+</h3>
+<ul>
+    <li>Theta (XCFA): <a href="https://github.com/FTSRG/theta/pulls">GitHub repository</a></li>
+    <li>Faulty HW, correct SW: <a href="https://dl.acm.org/citation.cfm?id=3358238">ACM-TECS
+        paper</a></li>
+</ul>

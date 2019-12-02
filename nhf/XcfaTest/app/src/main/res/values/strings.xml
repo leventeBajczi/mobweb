@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">XcfaTest</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">XCFA Tester</string>
     <string name="card_var_display">Vars: %d</string>
     <string name="card_thread_display">Threads: %d</string>
     <string name="card_status_ok">Status: OK</string>
     <string name="card_status_error">Status: error</string>
+    <string name="infobutton">Info button</string>
 </resources>
