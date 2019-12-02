@@ -81,4 +81,17 @@ public class XcfaAbstraction {
         return values;
     }
 
+    /**
+     * @return The number of global variables
+     */
+    public int getVars() {
+        return xcfa.getVars().size();
+    }
+
+    /**
+     * @return The number of threads
+     */
+    public int getThreads() {
+        return xcfa.getProcesses().size();
+    }
 }

@@ -6,6 +6,7 @@ import android.widget.ProgressBar;
 
 import hu.bme.aut.xcfatest.data.adapters.MyRecyclerViewAdapter;
 import hu.bme.aut.xcfatest.data.model.XcfaRow;
+import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
 
 /**
  * This AsyncTask descendant is responsible for filling up the adapter from another thread.
@@ -36,18 +37,21 @@ public class AsyncFiller extends AsyncTask<Void, XcfaRow, Void> {
      */
     @Override
     protected Void doInBackground(Void... voids) {
-        for (int i = 0; i < 8; ++i) {
-            publishProgress(new XcfaRow("something/long/filename" + 2 * i, true, 2, 4));
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            publishProgress(new XcfaRow("something/long/filename" + (2 * i + 1), false, 2, 4));
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        for (String fileName : progressBar.getContext().fileList()) {
+            if (fileName.endsWith(".xcfa")) {
+                if (XcfaRow.exists(fileName)) {
+                    XcfaAbstraction abstraction = XcfaRow.get(fileName);
+                    publishProgress(new XcfaRow(fileName, true, abstraction.getVars(), abstraction.getThreads(), abstraction));
+                }
+                XcfaRow xcfaRow;
+                try {
+                    XcfaAbstraction xcfa = XcfaAbstraction.fromStream(progressBar.getContext().openFileInput(fileName));
+                    xcfaRow = new XcfaRow(fileName, true, xcfa.getVars(), xcfa.getThreads(), xcfa);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    xcfaRow = new XcfaRow(fileName, false, 0, 0, null);
+                }
+                publishProgress(xcfaRow);
             }
         }
         return null;
