@@ -1,6 +1,7 @@
 package hu.bme.aut.xcfatest;
 
 import android.os.Bundle;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         //Collecting views
         RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
         FloatingActionButton fab = findViewById(R.id.fab1);
+        ProgressBar progressBar = findViewById(R.id.progressBar);
         //Setting up RecyclerView
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         MyRecyclerViewAdapter mAdapter = new MyRecyclerViewAdapter();
         recyclerView.setAdapter(mAdapter);
         //Fill up the list with data
-        AsyncFiller filler = new AsyncFiller(mAdapter);
+        AsyncFiller filler = new AsyncFiller(mAdapter, progressBar);
         filler.execute();
 
 

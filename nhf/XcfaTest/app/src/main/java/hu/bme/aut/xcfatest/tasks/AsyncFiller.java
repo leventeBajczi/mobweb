@@ -1,6 +1,8 @@
 package hu.bme.aut.xcfatest.tasks;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.widget.ProgressBar;
 
 import hu.bme.aut.xcfatest.adapter.MyRecyclerViewAdapter;
 import hu.bme.aut.xcfatest.model.XcfaRow;
@@ -12,12 +14,17 @@ import hu.bme.aut.xcfatest.model.XcfaRow;
  */
 public class AsyncFiller extends AsyncTask<Void, XcfaRow, Void> {
     private final MyRecyclerViewAdapter adapter;
+    @SuppressLint("StaticFieldLeak")
+    //We will definitely have the progress bar the entire time filling up elements
+    private final ProgressBar progressBar;
 
     /**
      * @param adapter The adapter that will hold the values.
+     * @param progressBar The progressbar which has to be disabled upon completion
      */
-    public AsyncFiller(MyRecyclerViewAdapter adapter) {
+    public AsyncFiller(MyRecyclerViewAdapter adapter, ProgressBar progressBar) {
         this.adapter = adapter;
+        this.progressBar = progressBar;
     }
 
     /**
@@ -56,5 +63,18 @@ public class AsyncFiller extends AsyncTask<Void, XcfaRow, Void> {
     @Override
     protected void onProgressUpdate(XcfaRow... values) {
         adapter.addData(values[0]);
+    }
+
+    /**
+     * When completed, the progressbar is no longer necessary. We display a tick, which fades away.
+     *
+     * @param aVoid dummy parameter
+     */
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        progressBar.animate().
+                setDuration(250).
+                alpha(0f).
+                start();
     }
 }
