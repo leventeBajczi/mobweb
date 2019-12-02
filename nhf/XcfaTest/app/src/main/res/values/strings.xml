@@ -16,4 +16,8 @@
     <string name="no_template">No template found!</string>
     <string name="no_template_msg">No template could be found in the assets folder. Please try reinstalling the application.</string>
     <string name="which_template_msg">Choose a template from the list to modify.</string>
+    <string name="title_activity_run">RunActivity</string>
+    <string name="discard_title">Discard changes?</string>
+    <string name="discard_message">Do you really want to discard all changes?</string>
+    <string name="discard_discard">Discard</string>
 </resources>

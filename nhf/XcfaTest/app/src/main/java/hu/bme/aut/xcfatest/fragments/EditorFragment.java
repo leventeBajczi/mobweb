@@ -15,13 +15,8 @@ import java.util.Objects;
 
 import hu.bme.aut.xcfatest.R;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class EditorFragment extends Fragment {
 
-    public EditorFragment() {
-    }
+public class EditorFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

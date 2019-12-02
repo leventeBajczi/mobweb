@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.Objects;
 
+import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
+
 public class EditorActivity extends AppCompatActivity {
 
     @Override
@@ -15,13 +17,16 @@ public class EditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_editor);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        MyDialogBuilder.getDialog(this,
+                R.string.discard_title,
+                R.string.discard_message,
+                R.string.discard_discard,
+                (a, b) -> super.onBackPressed()).show();
     }
 }
