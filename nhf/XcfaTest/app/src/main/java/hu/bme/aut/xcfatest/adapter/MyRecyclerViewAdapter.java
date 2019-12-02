@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import hu.bme.aut.xcfatest.R;
@@ -26,12 +26,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private List<XcfaRow> data;
 
     /**
-     * Take data to be displayed.
-     *
-     * @param data the list of data needing to be displayed
+     * Initialize the object. We don't take any values just yet, because we will update them
+     * asynchronously.
+     * @see hu.bme.aut.xcfatest.tasks.AsyncFiller
      */
-    public MyRecyclerViewAdapter(XcfaRow[] data) {
-        this.data = Arrays.asList(data);
+    public MyRecyclerViewAdapter() {
+        this.data = new ArrayList<>();
     }
 
     /**
@@ -96,5 +96,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             this.noOfVars = noOfVars;
             this.noOfThreads = noOfThreads;
         }
+    }
+
+    /**
+     * Add new data to the adapter
+     *
+     * @param newElement the new element to be added
+     */
+    public void addData(XcfaRow newElement) {
+        data.add(newElement);
+        notifyDataSetChanged();
     }
 }

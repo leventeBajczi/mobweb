@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hu.bme.aut.xcfatest.adapter.MyRecyclerViewAdapter;
-import hu.bme.aut.xcfatest.model.XcfaRow;
+import hu.bme.aut.xcfatest.tasks.AsyncFiller;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,15 +28,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        //Fill up the list with data
-        XcfaRow[] sampleData = new XcfaRow[16];
-        for (int i = 0; i < 8; ++i) {
-            sampleData[2 * i] = new XcfaRow("something/long/filename" + 2 * i, true, 2, 4);
-            sampleData[2 * i + 1] = new XcfaRow("something/long/filename" + (2 * i + 1), false, 2, 4);
-        }
-        //Set the adapter
-        RecyclerView.Adapter mAdapter = new MyRecyclerViewAdapter(sampleData);
+        MyRecyclerViewAdapter mAdapter = new MyRecyclerViewAdapter();
         recyclerView.setAdapter(mAdapter);
+        //Fill up the list with data
+        AsyncFiller filler = new AsyncFiller(mAdapter);
+        filler.execute();
 
 
 //        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
