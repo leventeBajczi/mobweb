@@ -6,4 +6,50 @@
     tools:context=".fragments.EditorFragment"
     tools:showIn="@layout/activity_editor">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10">
+
+        <EditText
+            android:id="@+id/editor"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            tools:ignore="LabelFor" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/save"
+                android:textColor="@color/ok"
+                android:textSize="@dimen/text_h1" />
+
+            <TextView
+                android:id="@+id/discard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/discard"
+                android:textColor="@color/error"
+                android:textSize="@dimen/text_h1" />
+        </LinearLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

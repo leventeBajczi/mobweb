@@ -8,13 +8,17 @@ import androidx.appcompat.widget.Toolbar;
 import java.util.Objects;
 
 import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
+import hu.bme.aut.xcfatest.fragments.EditorFragment;
 
 public class EditorActivity extends AppCompatActivity {
+
+    private EditorFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+        mFragment = ((EditorFragment) Objects.requireNonNull(getSupportFragmentManager().findFragmentById(R.id.fragment)));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
@@ -23,10 +27,15 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        MyDialogBuilder.getDialog(this,
-                R.string.discard_title,
-                R.string.discard_message,
-                R.string.discard_discard,
-                (a, b) -> super.onBackPressed()).show();
+        if (mFragment.getModified()) {
+            MyDialogBuilder.getDialog(this,
+                    R.string.discard_title,
+                    R.string.discard_message,
+                    R.string.discard_discard,
+                    (a, b) -> super.onBackPressed(),
+                    R.string.save,
+                    (a, b) -> mFragment.save(super::onBackPressed)).show();
+        } else
+            super.onBackPressed();
     }
 }
