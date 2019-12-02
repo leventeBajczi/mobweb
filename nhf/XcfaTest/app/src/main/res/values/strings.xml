@@ -13,4 +13,7 @@
     <string name="which_template_question">Which template to use?</string>
     <string name="title_activity_editor">EditorActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="no_template">No template found!</string>
+    <string name="no_template_msg">No template could be found in the assets folder. Please try reinstalling the application.</string>
+    <string name="which_template_msg">Choose a template from the list to modify.</string>
 </resources>
