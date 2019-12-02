@@ -26,4 +26,6 @@
     <string name="save_as_msg">Please specify a filename to use as the save location.</string>
     <string name="save_msg">Is this filename OK?</string>
     <string name="run">Run</string>
+    <string name="modify">Edit</string>
+    <string name="saved_ok">Saved file %s</string>
 </resources>

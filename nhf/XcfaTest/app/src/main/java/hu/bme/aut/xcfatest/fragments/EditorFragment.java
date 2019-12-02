@@ -1,5 +1,6 @@
 package hu.bme.aut.xcfatest.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -102,27 +104,31 @@ public class EditorFragment extends Fragment {
 
     public void save(Runnable onSuccess) {
         if (fileToModify != null) {
+            @SuppressLint("InflateParams") RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.dialog_content, null);
             TextView textView = new TextView(getContext());
+            relativeLayout.addView(textView);
             textView.setText(fileToModify);
             MyDialogBuilder.getDialog(getContext(),
                     R.string.save,
                     R.string.save_msg,
                     android.R.string.yes,
                     (dialogInterface, i) -> {
-                        FileUtils.writeFile(getView(), fileToModify, editor.getText());
+                        FileUtils.writeFile(Objects.requireNonNull(getView()), fileToModify, editor.getText());
                         modified = false;
                         XcfaRow.remove(fileToModify);
                         if (onSuccess != null) onSuccess.run();
                     },
                     R.string.save_as,
-                    (dialogInterface, i) -> saveAs(onSuccess)).setView(textView).show();
+                    (dialogInterface, i) -> saveAs(onSuccess)).setView(relativeLayout).show();
         } else {
             saveAs(onSuccess);
         }
     }
 
     private void saveAs(Runnable onSuccess) {
+        @SuppressLint("InflateParams") RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.dialog_content, null);
         EditText editText = new EditText(getContext());
+        relativeLayout.addView(editText);
         editText.setHint("example.xcfa");
         editText.setSingleLine();
         MyDialogBuilder.getDialog(getContext(),
@@ -132,11 +138,11 @@ public class EditorFragment extends Fragment {
                 (dialogInterface, i) -> {
                     String choice = editText.getText().toString();
                     fileToModify = choice.endsWith(".xcfa") ? choice : choice + ".xcfa";
-                    FileUtils.writeFile(getView(), fileToModify, editor.getText());
+                    FileUtils.writeFile(Objects.requireNonNull(getView()), fileToModify, editor.getText());
                     modified = false;
                     XcfaRow.remove(fileToModify);
                     if (onSuccess != null) onSuccess.run();
-                }).setView(editText).show();
+                }).setView(relativeLayout).show();
     }
 
     public boolean getModified() {

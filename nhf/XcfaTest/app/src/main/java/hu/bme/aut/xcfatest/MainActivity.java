@@ -1,5 +1,6 @@
 package hu.bme.aut.xcfatest;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,6 +32,8 @@ import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
 import hu.bme.aut.xcfatest.tasks.AsyncFiller;
 
 public class MainActivity extends AppCompatActivity {
+    private MyRecyclerViewAdapter mAdapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +48,15 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
         RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
         FloatingActionButton fab = findViewById(R.id.fab1);
-        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         ImageButton infoButton = findViewById(R.id.info_button);
 
         //Setting up RecyclerView
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        MyRecyclerViewAdapter mAdapter = new MyRecyclerViewAdapter();
+        mAdapter = new MyRecyclerViewAdapter();
         recyclerView.setAdapter(mAdapter);
-
-        //Fill up the list with data
-        AsyncFiller filler = new AsyncFiller(mAdapter, progressBar);
-        filler.execute();
 
         //Setting interaction listeners
         infoButton.setOnClickListener(view -> {
@@ -76,7 +76,9 @@ public class MainActivity extends AppCompatActivity {
                     R.string.new_xcfa_alert_message,
                     R.string.use,
                     (dialogInterface, i) -> {
-                        Spinner spinner = new Spinner(MainActivity.this.getBaseContext());
+                        @SuppressLint("InflateParams") RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(getBaseContext()).inflate(R.layout.dialog_content, null);
+                        Spinner spinner = new Spinner(getBaseContext());
+                        relativeLayout.addView(spinner);
                         String[] templates;
                         try {
                             templates = getAssets().list("templates");
@@ -100,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
                                         startActivity(intent);
                                     },
                                     android.R.string.cancel,
-                                    null).setView(spinner).show();
+                                    null).setView(relativeLayout).show();
+
                         } else {
                             MyDialogBuilder.getDialog(MainActivity.this,
                                     R.string.no_template,
@@ -117,4 +120,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.clear();
+        //Fill up the list with data
+        AsyncFiller filler = new AsyncFiller(mAdapter, progressBar);
+        filler.execute();
+    }
 }

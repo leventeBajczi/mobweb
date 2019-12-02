@@ -13,6 +13,7 @@ public class XcfaRowListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(view.getContext(), RunActivity.class);
+        intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.putExtra("file", xcfaRow.getName());
         view.getContext().startActivity(intent);
     }

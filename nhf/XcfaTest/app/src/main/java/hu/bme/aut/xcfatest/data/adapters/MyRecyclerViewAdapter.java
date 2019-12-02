@@ -83,6 +83,13 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     /**
+     * This method clears the list of held elements.
+     */
+    public void clear() {
+        data.clear();
+    }
+
+    /**
      * The ViewHolder to be used for the adapter
      */
     static class MyViewHolder extends RecyclerView.ViewHolder {
