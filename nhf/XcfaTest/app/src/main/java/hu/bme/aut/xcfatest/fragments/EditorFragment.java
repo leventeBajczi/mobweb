@@ -12,8 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Objects;
 
 import hu.bme.aut.xcfatest.R;
@@ -53,6 +56,28 @@ public class EditorFragment extends Fragment {
     public void onStart() {
         super.onStart();
         editor = Objects.requireNonNull(getView()).findViewById(R.id.editor);
+        String text = "";
+        if (fileToModify != null) {
+            try {
+                templateInputStream = Objects.requireNonNull(getActivity()).openFileInput(fileToModify);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        if (templateInputStream != null) {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(templateInputStream));
+            try {
+                String line;
+                StringBuilder builder = new StringBuilder();
+                while ((line = bufferedReader.readLine()) != null)
+                    builder.append(line).append(System.lineSeparator());
+                bufferedReader.close();
+                text = builder.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        editor.setText(text);
         editor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -76,6 +101,8 @@ public class EditorFragment extends Fragment {
 
     public void save(Runnable onSuccess) {
         if (fileToModify != null) {
+            TextView textView = new TextView(getContext());
+            textView.setText(fileToModify);
             MyDialogBuilder.getDialog(getContext(),
                     R.string.save,
                     R.string.save_msg,
@@ -86,7 +113,7 @@ public class EditorFragment extends Fragment {
                         if (onSuccess != null) onSuccess.run();
                     },
                     R.string.save_as,
-                    (dialogInterface, i) -> saveAs(onSuccess));
+                    (dialogInterface, i) -> saveAs(onSuccess)).setView(textView).show();
         } else {
             saveAs(onSuccess);
         }
@@ -95,6 +122,7 @@ public class EditorFragment extends Fragment {
     private void saveAs(Runnable onSuccess) {
         EditText editText = new EditText(getContext());
         editText.setHint("example.xcfa");
+        editText.setSingleLine();
         MyDialogBuilder.getDialog(getContext(),
                 R.string.save_as,
                 R.string.save_as_msg,
