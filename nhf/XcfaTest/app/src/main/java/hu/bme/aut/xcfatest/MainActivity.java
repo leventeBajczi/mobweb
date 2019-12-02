@@ -1,13 +1,17 @@
 package hu.bme.aut.xcfatest;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,15 +71,57 @@ public class MainActivity extends AppCompatActivity {
                 html = "Asset could not be loaded.";
             }
 
-            FrameLayout frameLayout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.info_main, coordinatorLayout, false);
+            FrameLayout frameLayout = (FrameLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.info_main, coordinatorLayout, false);
             TextView textView = frameLayout.findViewById(R.id.html_text);
             textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
             textView.setMovementMethod(LinkMovementMethod.getInstance());
-            Dialog dialog = new Dialog(this, android.R.style.ThemeOverlay_Material_Dialog);
+            Dialog dialog = new Dialog(MainActivity.this, android.R.style.ThemeOverlay_Material_Dialog);
             dialog.addContentView(frameLayout, frameLayout.getLayoutParams());
             dialog.show();
         });
         fab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.
+                    setTitle(R.string.new_xcfa_alert_title).
+                    setMessage(R.string.new_xcfa_alert_message).
+                    setPositiveButton(R.string.use, (dialogInterface, i) -> {
+                        Spinner spinner = new Spinner(builder.getContext());
+                        String[] templates;
+                        try {
+                            templates = getAssets().list("templates");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            templates = new String[0];
+                        }
+                        if (templates != null && templates.length > 0) {
+                            spinner.setAdapter(
+                                    new ArrayAdapter<>(
+                                            getApplicationContext(),
+                                            android.R.layout.simple_spinner_dropdown_item,
+                                            templates)
+                            );
+                            new AlertDialog.Builder(builder.getContext()).
+                                    setTitle(R.string.which_template_question).
+                                    setView(spinner).
+                                    setPositiveButton(android.R.string.yes, (dialogInterface1, i1) -> {
+                                        intent.putExtra("template", "templates" + File.separator + spinner.getSelectedItem());
+                                        startActivity(intent);
+                                    }).
+                                    setNeutralButton(android.R.string.cancel, null).
+                                    setCancelable(true).
+                                    show();
+                        } else {
+                            new AlertDialog.Builder(builder.getContext()).
+                                    setMessage("No template found!").
+                                    show();
+                        }
+
+                    }).
+                    setNegativeButton(R.string.empty, (dialogInterface, i) -> startActivity(intent)).
+                    setNeutralButton(android.R.string.cancel, null).
+                    setCancelable(true).
+                    show();
         });
 
 //        try {

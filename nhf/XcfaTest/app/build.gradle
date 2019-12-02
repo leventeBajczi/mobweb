@@ -12,7 +12,7 @@ android {
 
         externalNativeBuild {
             cmake {
-               cppFlags "-DVIXL_INCLUDE_SIMULATOR_AARCH64", "-DVIXL_CODE_BUFFER_MALLOC"
+                cppFlags "-DVIXL_INCLUDE_SIMULATOR_AARCH64", "-DVIXL_CODE_BUFFER_MALLOC"
             }
         }
 

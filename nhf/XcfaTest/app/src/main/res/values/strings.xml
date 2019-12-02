@@ -6,4 +6,11 @@
     <string name="card_status_ok">Status: OK</string>
     <string name="card_status_error">Status: error</string>
     <string name="infobutton">Info button</string>
+    <string name="use">Template</string>
+    <string name="empty">Empty</string>
+    <string name="new_xcfa_alert_message">Would you like to use a template as a starting point or start from scratch?</string>
+    <string name="new_xcfa_alert_title">Create XCFA</string>
+    <string name="which_template_question">Which template to use?</string>
+    <string name="title_activity_editor">EditorActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>
