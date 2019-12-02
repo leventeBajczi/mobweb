@@ -1,6 +1,7 @@
 package hu.bme.aut.xcfatest.fragments;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 
 import hu.bme.aut.xcfatest.EditorActivity;
 import hu.bme.aut.xcfatest.R;
+import hu.bme.aut.xcfatest.TestRunnerService;
 import hu.bme.aut.xcfatest.data.model.XcfaRow;
-import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
-import hu.bme.mit.theta.xcfa.XCFA;
+import hu.bme.aut.xcfatest.utils.MyBroadcastReceiver;
 
 public class RunFragment extends Fragment {
     private XcfaRow row;
@@ -52,6 +51,7 @@ public class RunFragment extends Fragment {
         Button edit = Objects.requireNonNull(getActivity()).findViewById(R.id.modify);
 
 
+
         filename.setText(row.getName());
         xcfaOk.setText(row.isOk() ? R.string.card_status_ok : R.string.card_status_error);
         xcfaOk.setTextColor(row.isOk() ? getResources().getColor(R.color.ok, getActivity().getTheme()) : getResources().getColor(R.color.error, getActivity().getTheme()));
@@ -60,17 +60,11 @@ public class RunFragment extends Fragment {
         noOfThreads.setText(getString(R.string.card_thread_display, row.getThreads()));
         if (!row.isOk()) button.setEnabled(false);
         button.setOnClickListener(view -> {
-            XcfaAbstraction xcfaAbstraction = null;
-            try {
-                xcfaAbstraction = XcfaAbstraction.fromStream(getActivity().openFileInput(row.getName()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < 1000; ++i) {
-                Map<XCFA.Process.Procedure, Map<String, Integer>> values = xcfaAbstraction.run();
-                values.values().forEach(stringIntegerMap -> stringIntegerMap.forEach((s, integer) ->
-                        result.setText(result.getText() + System.lineSeparator() + s + ": " + integer)));
-            }
+            Objects.requireNonNull(getContext()).registerReceiver(new MyBroadcastReceiver(result), new IntentFilter("XCFA_RESULTS_DONE"));
+            Intent intent = new Intent(getContext(), TestRunnerService.class);
+            intent.putExtra("filename", row.getName());
+            intent.putExtra("loops", 10);
+            Objects.requireNonNull(getContext()).startService(intent);
         });
         edit.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), EditorActivity.class);
