@@ -1,4 +1,4 @@
-package hu.bme.aut.xcfatest.adapter;
+package hu.bme.aut.xcfatest.data.adapters;
 
 import android.content.Context;
 

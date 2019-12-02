@@ -1,4 +1,4 @@
-package hu.bme.aut.xcfatest.view;
+package hu.bme.aut.xcfatest.data.view;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package hu.bme.aut.xcfatest.model;
+package hu.bme.aut.xcfatest.data.model;
 
 /**
  * A class representing a single row in the RecyclerView declared in content_main.xml

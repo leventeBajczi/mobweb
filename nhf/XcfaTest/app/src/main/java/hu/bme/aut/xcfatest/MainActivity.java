@@ -24,10 +24,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.File;
 import java.io.IOException;
 
-import hu.bme.aut.xcfatest.adapter.HtmlInfoAdapter;
-import hu.bme.aut.xcfatest.adapter.MyRecyclerViewAdapter;
+import hu.bme.aut.xcfatest.data.adapters.HtmlInfoAdapter;
+import hu.bme.aut.xcfatest.data.adapters.MyRecyclerViewAdapter;
+import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
 import hu.bme.aut.xcfatest.tasks.AsyncFiller;
-import hu.bme.aut.xcfatest.view.MyDialogBuilder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         //Setting interaction listeners
         infoButton.setOnClickListener(view -> {
             String html = HtmlInfoAdapter.getHtmlText(getApplicationContext());
-            FrameLayout frameLayout = (FrameLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.info_main, coordinatorLayout, false);
+            FrameLayout frameLayout = (FrameLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_info, coordinatorLayout, false);
             TextView textView = frameLayout.findViewById(R.id.html_text);
             textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
             textView.setMovementMethod(LinkMovementMethod.getInstance());

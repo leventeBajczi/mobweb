@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.widget.ProgressBar;
 
-import hu.bme.aut.xcfatest.adapter.MyRecyclerViewAdapter;
-import hu.bme.aut.xcfatest.model.XcfaRow;
+import hu.bme.aut.xcfatest.data.adapters.MyRecyclerViewAdapter;
+import hu.bme.aut.xcfatest.data.model.XcfaRow;
 
 /**
  * This AsyncTask descendant is responsible for filling up the adapter from another thread.
