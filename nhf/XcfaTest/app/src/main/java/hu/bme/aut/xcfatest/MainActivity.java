@@ -4,18 +4,41 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+
+import hu.bme.aut.xcfatest.adapter.MyRecyclerViewAdapter;
+import hu.bme.aut.xcfatest.model.XcfaRow;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Setting the root layout and toolbar
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //Collecting views
+        RecyclerView recyclerView = findViewById(R.id.my_recycler_view);
+        FloatingActionButton fab = findViewById(R.id.fab1);
+        //Setting up RecyclerView
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        //Fill up the list with data
+        XcfaRow[] sampleData = new XcfaRow[16];
+        for (int i = 0; i < 8; ++i) {
+            sampleData[2 * i] = new XcfaRow("something/long/filename" + 2 * i, true, 2, 4);
+            sampleData[2 * i + 1] = new XcfaRow("something/long/filename" + (2 * i + 1), false, 2, 4);
+        }
+        //Set the adapter
+        RecyclerView.Adapter mAdapter = new MyRecyclerViewAdapter(sampleData);
+        recyclerView.setAdapter(mAdapter);
+
+
 //        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
 //        try {
 //            XcfaAbstraction xcfaAbstraction = XcfaAbstraction.fromString(sampleXcfa);
@@ -34,10 +57,6 @@ public class MainActivity extends AppCompatActivity {
 //        } catch (NoSuchElementException e) {
 //            Snackbar.make(coordinatorLayout, "Xcfa is not deterministic, it would use resident garbage.", Snackbar.LENGTH_LONG).show();
 //        }
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
     }
 
 }

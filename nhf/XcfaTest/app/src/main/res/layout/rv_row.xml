@@ -1,0 +1,66 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/default_margin"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:padding="@dimen/default_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:textSize="@dimen/text_h1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/default_margin"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/xcfa_ok"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:alpha="0.5"
+                android:textAlignment="center" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:alpha="0.25"
+                android:background="@color/black" />
+
+            <TextView
+                android:id="@+id/no_of_vars"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:alpha="0.5"
+                android:textAlignment="center" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:alpha="0.25"
+                android:background="@color/black" />
+
+            <TextView
+                android:id="@+id/no_of_threads"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:alpha="0.5"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
