@@ -12,6 +12,10 @@ void Process::bindLabel(const std::string& label) {
     assembler.bind(toBind);
 }
 
+void Process::finalize() {
+    assembler.finalize();
+}
+
 void Process::run() {
     assembler.run();
 }

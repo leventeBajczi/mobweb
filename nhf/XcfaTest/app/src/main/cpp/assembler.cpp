@@ -11,8 +11,11 @@ MAssembler::MAssembler()
     this->simulator = new Simulator(this->decoder);
 }
 
-void MAssembler::run() {
+void MAssembler::finalize() {
     this->masm->FinalizeCode();
+}
+
+void MAssembler::run() {
     this->simulator->RunFrom(this->masm->GetLabelAddress<Instruction *>(this->firstLabel));
 }
 

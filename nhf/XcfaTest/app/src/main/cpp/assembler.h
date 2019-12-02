@@ -32,6 +32,8 @@ public:
     ~MAssembler();
 
     void addGlobal(unsigned int reg, uint64_t value);
+
+    void finalize();
 };
 
 #endif //XCFATEST_ASSEMBLER_H

@@ -24,6 +24,7 @@ public:
         for(uint64_t* ptr : pointers)
             delete ptr;
     }
+
 };
 
 const XRegister& xLut(int i) {
@@ -61,6 +62,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_newProcess(JNIEnv *, jobject) {
     processes.emplace_back();
+    if (currentProcess != nullptr)currentProcess->finalize();
     currentProcess = &processes.back();
 }
 
@@ -79,14 +81,19 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_bindLabel(JNIEnv *env, jobject, j
     jboolean isCopy;
     const char* chars = env->GetStringUTFChars(label, &isCopy);
     currentProcess->bindLabel(chars);
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "%s:", chars);
+
     if(isCopy) env->ReleaseStringUTFChars(label, chars);
 }
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_getRegisterValue(JNIEnv *, jobject, jint i) {
-    return static_cast<jint>(currentProcess->getXReg(static_cast<unsigned int>(i)));
+Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_getRegisterValue(JNIEnv *, jobject, jint proc,
+                                                                jint reg) {
+    int i = 0;
+    for (Process &process : processes) {
+        if (i++ == proc) return static_cast<jint>(process.getXReg(static_cast<unsigned int>(reg)));
+    }
+    return -1;
 }
 
 extern "C"
@@ -104,6 +111,7 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_addGlobal(JNIEnv *, jobject, jint
 extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_run(JNIEnv *, jobject) {
+    currentProcess->finalize();
     std::condition_variable cv;
     bool ready = false;
     std::list<std::thread> threads;
@@ -112,13 +120,12 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_run(JNIEnv *, jobject) {
         threads.emplace_back([&](int) {
                 std::mutex mtx;
                 std::unique_lock<std::mutex> lck{mtx};
-                __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Ready");
                 while(!ready) cv.wait(lck);
-                __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Running");
                 proc.run();
             }, 0);
     }
     ready = true;
+    std::this_thread::sleep_for(std::chrono::milliseconds(5)); // to let all threads finalize
     cv.notify_all();
     for(auto& th : threads)
     {
@@ -135,13 +142,18 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_calcBinary(JNIEnv *env, jobject, 
     const char* chars = env->GetStringUTFChars(operator_label, &isCopy);
     switch(chars[0])
     {
-        case '+': __ Add(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Add %d, %d, %d", d, s1, s2); break;
+        case '+':
+            __ Add(xLut(d), xLut(s1), xLut(s2));
         case '=': __ Sub(xLut(d), xLut(s1), xLut(s2)); __ Mov(xLut(s1), (uint64_t) 0), __ Cinv(xLut(d), xLut(s1), ne);
-        __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Sub %d, %d, %d", d, s1, s2); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mov, %d, imm0", s1); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cinv %d, %d ne", d, s1); break;
-        case '-': __ Sub(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Sub %d, %d, %d", d, s1, s2); break;
-        case '*': __ Mul(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mul %d, %d, %d", d, s1, s2); break;
-        case '/': __ Sdiv(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Div %d, %d, %d", d, s1, s2); break;
-        default: __ Add(xLut(d), xLut(s1), xLut(s2)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Add %d, %d, %d", d, s1, s2); break;
+
+        case '-':
+            __ Sub(xLut(d), xLut(s1), xLut(s2));
+        case '*':
+            __ Mul(xLut(d), xLut(s1), xLut(s2));
+        case '/':
+            __ Sdiv(xLut(d), xLut(s1), xLut(s2));
+        default:
+            __ Add(xLut(d), xLut(s1), xLut(s2));
     }
     if(isCopy) env->ReleaseStringUTFChars(operator_label, chars);
 }
@@ -154,10 +166,12 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_calcUnary(JNIEnv * env, jobject, 
     const char* chars = env->GetStringUTFChars(operator_label, &isCopy);
     switch(chars[0])
     {
-        case '-': __ Neg(xLut(d), xLut(s)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Neg %d, %d", d, s); break;
+        case '-':
+            __ Neg(xLut(d), xLut(s));
         case 'n': __ Cmp(xLut(s), (uint64_t)0); __ Mov(xLut(s), (uint64_t) 0), __ Cinv(xLut(d), xLut(s), eq);
-            __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cmp %d, 0", s); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mov, %d, imm0", s); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cinv %d, %d eq", d, s); break;
-        default: __ Neg(xLut(d), xLut(s)); __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Neg %d, %d", d, s); break;
+
+        default:
+            __ Neg(xLut(d), xLut(s));
     }
     if(isCopy) env->ReleaseStringUTFChars(operator_label, chars);
 }
@@ -167,7 +181,7 @@ JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_mov(JNIEnv *, jobject, jint d,
                                                    jint s) {
     __ Mov(xLut(d), xLut(s));
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mov %d, %d", d, s);
+
 }
 
 extern "C"
@@ -175,7 +189,7 @@ JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_movLit(JNIEnv *, jobject, jint d,
                                                       jint val) {
     __ Mov(xLut(d), static_cast<uint64_t>(val));
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Mov %d, imm%d", d, val);
+
 
 }
 
@@ -186,8 +200,6 @@ Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_branch(JNIEnv *env, jobject, jint
     jboolean isCopy;
     const char* chars = env->GetStringUTFChars(label, &isCopy);
     __ Cbz(xLut(reg), currentProcess->getLabel(chars));
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Cbz %d, %s", reg, (char *) chars);
-
     if(isCopy) env->ReleaseStringUTFChars(label, chars);
 }
 
@@ -195,22 +207,24 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_ldr(JNIEnv *, jobject, jint d, jint s) {
     __ Ldr(xLut(d), MemOperand{xLut(s)});
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Ldr %d, %d", d, s);
+
 
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_ldar(JNIEnv *, jobject , jint d, jint s) {
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Ldar %d, %d", d, s);
+
     __ Ldar(xLut(d), MemOperand{xLut(s)});
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_ldxr(JNIEnv *, jobject , jint d, jint s) {
-    __ Ldxr(xLut(d), MemOperand{xLut(s)});
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Ldxr %d, %d", d, s);
+    __ Dmb(InnerShareable, BarrierAll);
+    __ Ldr(xLut(d), MemOperand{xLut(s)});
+    __ Dmb(InnerShareable, BarrierAll);
+    
 
 }
 
@@ -218,7 +232,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_str(JNIEnv *, jobject, jint s, jint d) {
     __ Str(xLut(s), MemOperand{xLut(d)});
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Str %d, %d", d, s);
+
 
 }
 
@@ -226,7 +240,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_stlr(JNIEnv *, jobject, jint s, jint d) {
     __ Stlr(xLut(s), MemOperand{xLut(d)});
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Stlr %d, %d", d, s);
+
 
 }
 
@@ -235,7 +249,6 @@ JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_stxr(JNIEnv *, jobject, jint s, jint d) {
     __ Dmb(InnerShareable, BarrierAll);
     __ Str(xLut(s), MemOperand{xLut(d)});
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Stxr %d, %d", d, s);
     __ Dmb(InnerShareable, BarrierAll);
 }
 
@@ -243,6 +256,6 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_hu_bme_aut_xcfatest_thetacompat_JniCompat_ret(JNIEnv *, jobject) {
     __ ret();
-    __android_log_print(ANDROID_LOG_DEBUG, "LOG_TAG", "Ret");
+
 }
 #pragma clang diagnostic pop

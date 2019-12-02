@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -59,7 +60,12 @@ public class RunFragment extends Fragment {
         noOfThreads.setText(getString(R.string.card_thread_display, row.getThreads()));
         if (!row.isOk()) button.setEnabled(false);
         button.setOnClickListener(view -> {
-            XcfaAbstraction xcfaAbstraction = row.getAbstraction();
+            XcfaAbstraction xcfaAbstraction = null;
+            try {
+                xcfaAbstraction = XcfaAbstraction.fromStream(getActivity().openFileInput(row.getName()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             for (int i = 0; i < 1000; ++i) {
                 Map<XCFA.Process.Procedure, Map<String, Integer>> values = xcfaAbstraction.run();
                 values.values().forEach(stringIntegerMap -> stringIntegerMap.forEach((s, integer) ->

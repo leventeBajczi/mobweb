@@ -10,7 +10,7 @@ public class JniCompat {
         initVixl();
     }
 
-    public native int getRegisterValue(int i);
+    public native int getRegisterValue(int proc, int reg);
 
     public native void addLabel(String label);
 

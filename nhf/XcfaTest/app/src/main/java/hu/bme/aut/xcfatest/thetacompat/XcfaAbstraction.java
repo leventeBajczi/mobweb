@@ -68,12 +68,16 @@ public class XcfaAbstraction {
     public Map<XCFA.Process.Procedure, Map<String, Integer>> run() {
         Map<XCFA.Process.Procedure, Map<String, Integer>> values = new HashMap<>();
         jniCompat.run();
-        for(XCFA.Process proc : xcfa.getProcesses()) {
-            for(XCFA.Process.Procedure procedure : proc.getProcedures()) {
+        List<XCFA.Process> processes = xcfa.getProcesses();
+        for (int i = 0; i < processes.size(); i++) {
+            XCFA.Process proc = processes.get(i);
+            for (XCFA.Process.Procedure procedure : proc.getProcedures()) {
                 Map<VarDecl<?>, Integer> procRegs = regs.get(procedure);
                 Map<String, Integer> procValues = new HashMap<>();
+                int finalI = i;
                 procRegs.forEach((varDecl, integer) -> {
-                    if(!xcfa.getVars().contains(varDecl)) procValues.put(varDecl.getName(), jniCompat.getRegisterValue(integer));
+                    if (!xcfa.getVars().contains(varDecl))
+                        procValues.put(varDecl.getName(), jniCompat.getRegisterValue(finalI, integer));
                 });
                 values.put(procedure, procValues);
             }

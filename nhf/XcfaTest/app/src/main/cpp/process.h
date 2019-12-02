@@ -19,5 +19,7 @@ public:
     MacroAssembler* getMasm();
     int64_t getXReg(unsigned int);
     void addGlobal(unsigned int, uint64_t);
+
+    void finalize();
 };
 #endif //XCFATEST_PROCESS_H
