@@ -1,4 +1,4 @@
-package hu.bme.aut.xcfatest;
+package hu.bme.aut.xcfatest.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,12 +13,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
+import hu.bme.aut.xcfatest.R;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class EditorActivityFragment extends Fragment {
+public class EditorFragment extends Fragment {
 
-    public EditorActivityFragment() {
+    public EditorFragment() {
     }
 
     @Override
