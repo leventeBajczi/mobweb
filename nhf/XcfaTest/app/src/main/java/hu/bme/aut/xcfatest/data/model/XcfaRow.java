@@ -9,7 +9,7 @@ import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
  * A class representing a single row in the RecyclerView declared in content_main.xml
  */
 public class XcfaRow {
-    private static final Map<String, XcfaAbstraction> LUT = new HashMap<>();
+    private static final Map<String, XcfaRow> LUT = new HashMap<>();
 
     private final String name;
     private final boolean ok;
@@ -33,11 +33,11 @@ public class XcfaRow {
         this.vars = vars;
         this.threads = threads;
         this.xcfaAbstraction = xcfaAbstraction;
-        if (xcfaAbstraction != null) LUT.put(name, xcfaAbstraction);
+        if (xcfaAbstraction != null) LUT.put(name, this);
     }
 
     /**
-     * Returns if the given filename already has a valid XcfaAbstraction.
+     * Returns if the given filename already has a valid XcfaRow.
      *
      * @param fileName The filename to check against
      * @return true when it exists in the LUT
@@ -48,9 +48,9 @@ public class XcfaRow {
 
     /**
      * @param fileName The filename of the XCFA
-     * @return the XcfaAbstraction for the given XCFA
+     * @return the XcfaRow for the given XCFA
      */
-    public static XcfaAbstraction get(String fileName) {
+    public static XcfaRow get(String fileName) {
         return LUT.get(fileName);
     }
 
@@ -77,5 +77,9 @@ public class XcfaRow {
 
     public int getThreads() {
         return threads;
+    }
+
+    public XcfaAbstraction getAbstraction() {
+        return xcfaAbstraction;
     }
 }

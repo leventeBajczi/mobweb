@@ -40,18 +40,18 @@ public class AsyncFiller extends AsyncTask<Void, XcfaRow, Void> {
         for (String fileName : progressBar.getContext().fileList()) {
             if (fileName.endsWith(".xcfa")) {
                 if (XcfaRow.exists(fileName)) {
-                    XcfaAbstraction abstraction = XcfaRow.get(fileName);
-                    publishProgress(new XcfaRow(fileName, true, abstraction.getVars(), abstraction.getThreads(), abstraction));
+                    publishProgress(XcfaRow.get(fileName));
+                } else {
+                    XcfaRow xcfaRow;
+                    try {
+                        XcfaAbstraction xcfa = XcfaAbstraction.fromStream(progressBar.getContext().openFileInput(fileName));
+                        xcfaRow = new XcfaRow(fileName, true, xcfa.getVars(), xcfa.getThreads(), xcfa);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        xcfaRow = new XcfaRow(fileName, false, 0, 0, null);
+                    }
+                    publishProgress(xcfaRow);
                 }
-                XcfaRow xcfaRow;
-                try {
-                    XcfaAbstraction xcfa = XcfaAbstraction.fromStream(progressBar.getContext().openFileInput(fileName));
-                    xcfaRow = new XcfaRow(fileName, true, xcfa.getVars(), xcfa.getThreads(), xcfa);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    xcfaRow = new XcfaRow(fileName, false, 0, 0, null);
-                }
-                publishProgress(xcfaRow);
             }
         }
         return null;

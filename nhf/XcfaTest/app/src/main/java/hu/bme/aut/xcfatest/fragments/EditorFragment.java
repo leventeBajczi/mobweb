@@ -109,7 +109,7 @@ public class EditorFragment extends Fragment {
                     R.string.save_msg,
                     android.R.string.yes,
                     (dialogInterface, i) -> {
-                        FileUtils.writeFile(fileToModify, editor.getText());
+                        FileUtils.writeFile(getView(), fileToModify, editor.getText());
                         modified = false;
                         XcfaRow.remove(fileToModify);
                         if (onSuccess != null) onSuccess.run();
@@ -132,7 +132,7 @@ public class EditorFragment extends Fragment {
                 (dialogInterface, i) -> {
                     String choice = editText.getText().toString();
                     fileToModify = choice.endsWith(".xcfa") ? choice : choice + ".xcfa";
-                    FileUtils.writeFile(fileToModify, editor.getText());
+                    FileUtils.writeFile(getView(), fileToModify, editor.getText());
                     modified = false;
                     XcfaRow.remove(fileToModify);
                     if (onSuccess != null) onSuccess.run();

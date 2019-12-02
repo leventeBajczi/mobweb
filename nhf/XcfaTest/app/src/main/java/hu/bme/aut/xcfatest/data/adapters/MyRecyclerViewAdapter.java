@@ -70,7 +70,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         holder.xcfaOk.setText(xcfaRow.isOk() ? context.getString(R.string.card_status_ok) : context.getString(R.string.card_status_error));
         holder.xcfaOk.setTextColor(xcfaRow.isOk() ? context.getResources().getColor(R.color.ok, context.getTheme()) : context.getResources().getColor(R.color.error, context.getTheme()));
         holder.noOfVars.setText(context.getString(R.string.card_var_display, xcfaRow.getVars()));
-        holder.noOfThreads.setText(context.getString(R.string.card_var_display, xcfaRow.getVars()));
         holder.noOfThreads.setText(context.getString(R.string.card_thread_display, xcfaRow.getThreads()));
 
     }

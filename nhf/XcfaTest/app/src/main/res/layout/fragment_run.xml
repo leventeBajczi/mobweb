@@ -4,6 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.RunFragment"
+    android:layout_gravity="top"
     tools:showIn="@layout/activity_run">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/xcfa" />
+
+        <Button
+            android:id="@+id/run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/run" />
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

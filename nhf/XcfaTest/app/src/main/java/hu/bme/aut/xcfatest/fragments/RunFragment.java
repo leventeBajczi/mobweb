@@ -4,29 +4,64 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import java.io.File;
+import java.util.Map;
 import java.util.Objects;
 
 import hu.bme.aut.xcfatest.R;
+import hu.bme.aut.xcfatest.data.model.XcfaRow;
+import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
+import hu.bme.mit.theta.xcfa.XCFA;
 
 public class RunFragment extends Fragment {
+    private XcfaRow row;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        File fileToRun = null;
         Bundle extras = Objects.requireNonNull(getActivity()).getIntent().getExtras();
         if (extras != null) {
             String file = extras.getString("file");
-            if (file != null)
-                fileToRun = new File(getActivity().getFilesDir().getAbsolutePath() + File.separator + file);
-        }
+            if (file != null) {
+                row = XcfaRow.get(file);
+            }
 
+        }
         return inflater.inflate(R.layout.fragment_run, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        TextView filename = Objects.requireNonNull(getActivity()).findViewById(R.id.name);
+        TextView xcfaOk = Objects.requireNonNull(getActivity()).findViewById(R.id.xcfa_ok);
+        TextView noOfVars = Objects.requireNonNull(getActivity()).findViewById(R.id.no_of_vars);
+        TextView noOfThreads = Objects.requireNonNull(getActivity()).findViewById(R.id.no_of_threads);
+        TextView result = Objects.requireNonNull(getActivity()).findViewById(R.id.result);
+        Button button = Objects.requireNonNull(getActivity()).findViewById(R.id.run);
+
+
+        filename.setText(row.getName());
+        xcfaOk.setText(row.isOk() ? R.string.card_status_ok : R.string.card_status_error);
+        noOfVars.setText(getString(R.string.card_var_display, row.getVars()));
+        noOfThreads.setText(getString(R.string.card_thread_display, row.getThreads()));
+        if (!row.isOk()) button.setEnabled(false);
+        button.setOnClickListener(view -> {
+            XcfaAbstraction xcfaAbstraction = row.getAbstraction();
+            for (int i = 0; i < 1000; ++i) {
+                Map<XCFA.Process.Procedure, Map<String, Integer>> values = xcfaAbstraction.run();
+                values.values().forEach(stringIntegerMap -> {
+                    stringIntegerMap.forEach((s, integer) -> {
+                        result.setText(result.getText() + System.lineSeparator() + s + ": " + integer);
+                    });
+                });
+            }
+        });
     }
 }
