@@ -2,38 +2,63 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     android:scrollbars="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
+        android:weightSum="10"
         android:background="@color/colorPrimaryLight"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:text="Welcome to XCFA Tester!"
+            android:text="@string/welcome_to_xcfa_tester"
             android:textColor="@color/white"
             android:textSize="@dimen/text_h1" />
 
         <TextView
+            android:id="@+id/subtitle_text"
+            android:layout_below="@+id/title_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:text="Would you like to go through the onboarding process?"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:layout_marginBottom="0dp"
+            android:paddingBottom="@dimen/padding_subtitle_bottom"
+            android:text="@string/onboarding"
             android:textColor="@color/white"
             android:textSize="@dimen/text_h3" />
-    </LinearLayout>
 
-    <TextView
-        android:id="@+id/html_text"
-        android:layout_width="match_parent"
+        <com.synnapps.carouselview.CarouselView
+            android:id="@+id/carouselView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/subtitle_text"
+            android:background="@color/colorPrimary"
+            app:animateOnBoundary="false"
+            app:autoPlay="false"
+            app:fillColor="@color/white"
+            app:pageColor="@color/black"
+            app:radius="@dimen/carousel_radius"
+            app:strokeColor="@color/colorAccent"
+            app:strokeWidth="1dp" />
+    </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/skip"
+        android:layout_width="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/subtitle_text"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/default_margin"
-        android:textColor="@color/colorAccentLight" />
+        app:layout_anchorGravity="bottom|start"
+        app:srcCompat="@drawable/ic_skip_next_white_24dp" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

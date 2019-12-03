@@ -55,6 +55,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.synnapps:carouselview:0.1.5'
     implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
-    implementation 'com.ogaclejapan.smarttablayout:library:1.2.1@aar'
+
 }

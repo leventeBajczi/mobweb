@@ -54,12 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
         //start Onboarding when this is the first time
         SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
-        boolean firstTime = sharedPreferences.getBoolean(FIRST_TIME, false);
+        boolean firstTime = sharedPreferences.getBoolean(FIRST_TIME, true);
         if (firstTime) {
-            //Dialog dialog = MyDialogBuilder.getOnboardingDialog(this, coordinatorLayout, android.R.style.Theme_Material_NoActionBar_Fullscreen);
-
-            //dialog.show();
-            //sharedPreferences.edit().putBoolean(FIRST_TIME, true).apply();
+            MyDialogBuilder.getOnboardingDialog(this, coordinatorLayout, android.R.style.Theme_Material_NoActionBar_Fullscreen).show();
+            sharedPreferences.edit().putBoolean(FIRST_TIME, false).apply();
         }
 
         //Setting up RecyclerView
