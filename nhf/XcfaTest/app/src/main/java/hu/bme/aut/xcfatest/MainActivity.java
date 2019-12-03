@@ -1,19 +1,16 @@
 package hu.bme.aut.xcfatest;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import hu.bme.aut.xcfatest.data.adapters.HtmlInfoAdapter;
 import hu.bme.aut.xcfatest.data.adapters.MyRecyclerViewAdapter;
 import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
 import hu.bme.aut.xcfatest.tasks.AsyncFiller;
@@ -36,6 +32,9 @@ import hu.bme.aut.xcfatest.utils.ErrorHandler;
 public class MainActivity extends AppCompatActivity {
     private MyRecyclerViewAdapter mAdapter;
     private ProgressBar progressBar;
+    private static final String PREFERENCES = "MainActivityDefaultPreferences";
+    private static final String FIRST_TIME = "FirstTime";
+    private final static String INFO_HTML_PATH = "info.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +52,16 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         ImageButton infoButton = findViewById(R.id.info_button);
 
+        //start Onboarding when this is the first time
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
+        boolean firstTime = sharedPreferences.getBoolean(FIRST_TIME, false);
+        if (firstTime) {
+            //Dialog dialog = MyDialogBuilder.getOnboardingDialog(this, coordinatorLayout, android.R.style.Theme_Material_NoActionBar_Fullscreen);
+
+            //dialog.show();
+            //sharedPreferences.edit().putBoolean(FIRST_TIME, true).apply();
+        }
+
         //Setting up RecyclerView
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -61,16 +70,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
         //Setting interaction listeners
-        infoButton.setOnClickListener(view -> {
-            String html = HtmlInfoAdapter.getHtmlText(getApplicationContext());
-            FrameLayout frameLayout = (FrameLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_info, coordinatorLayout, false);
-            TextView textView = frameLayout.findViewById(R.id.html_text);
-            textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
-            textView.setMovementMethod(LinkMovementMethod.getInstance());
-            Dialog dialog = new Dialog(MainActivity.this, android.R.style.ThemeOverlay_Material_Dialog);
-            dialog.addContentView(frameLayout, frameLayout.getLayoutParams());
-            dialog.show();
-        });
+        infoButton.setOnClickListener(view -> MyDialogBuilder.getInfoDialog(MainActivity.this, INFO_HTML_PATH, coordinatorLayout, android.R.style.ThemeOverlay_Material_Dialog).show());
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, EditorActivity.class);
             MyDialogBuilder.getDialog(MainActivity.this,

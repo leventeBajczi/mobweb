@@ -20,8 +20,10 @@ import hu.bme.aut.xcfatest.EditorActivity;
 import hu.bme.aut.xcfatest.R;
 import hu.bme.aut.xcfatest.TestRunnerService;
 import hu.bme.aut.xcfatest.data.model.XcfaRow;
+import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
 import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
 import hu.bme.aut.xcfatest.utils.ErrorHandler;
+import hu.bme.aut.xcfatest.utils.FileUtils;
 import hu.bme.aut.xcfatest.utils.MyBroadcastReceiver;
 
 public class RunFragment extends Fragment {
@@ -35,6 +37,7 @@ public class RunFragment extends Fragment {
     private TextView result;
     private FloatingActionButton button;
     private FloatingActionButton edit;
+    private FloatingActionButton delete;
     private EditText editText;
 
     @Override
@@ -64,6 +67,7 @@ public class RunFragment extends Fragment {
         result = Objects.requireNonNull(getActivity()).findViewById(R.id.result);
         button = Objects.requireNonNull(getActivity()).findViewById(R.id.run);
         edit = Objects.requireNonNull(getActivity()).findViewById(R.id.modify);
+        delete = Objects.requireNonNull(getActivity()).findViewById(R.id.delete);
         editText = Objects.requireNonNull(getActivity()).findViewById(R.id.loops);
     }
 
@@ -107,6 +111,19 @@ public class RunFragment extends Fragment {
             intent.putExtra("file", row.getName());
             modified = true;
             startActivity(intent);
+        });
+        delete.setOnClickListener(view -> {
+            MyDialogBuilder.getDialog(getContext(),
+                    R.string.delete_title,
+                    R.string.delete_message,
+                    R.string.delete,
+                    (a, b) -> {
+                        FileUtils.deleteFile(Objects.requireNonNull(getView()), file);
+                        RunFragment.this.getActivity().onBackPressed();
+                    },
+                    android.R.string.cancel,
+                    null).show();
+
         });
     }
 }

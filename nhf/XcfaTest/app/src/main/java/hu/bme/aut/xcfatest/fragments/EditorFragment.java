@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 import hu.bme.aut.xcfatest.R;
-import hu.bme.aut.xcfatest.data.model.XcfaRow;
 import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
 import hu.bme.aut.xcfatest.utils.ErrorHandler;
 import hu.bme.aut.xcfatest.utils.FileUtils;
@@ -124,7 +123,6 @@ public class EditorFragment extends Fragment {
                     (dialogInterface, i) -> {
                         FileUtils.writeFile(Objects.requireNonNull(getView()), fileToModify, editor.getText());
                         modified = false;
-                        XcfaRow.remove(fileToModify);
                         if (onSuccess != null) onSuccess.run();
                     },
                     R.string.save_as,
@@ -149,7 +147,6 @@ public class EditorFragment extends Fragment {
                     fileToModify = choice.endsWith(".xcfa") ? choice : choice + ".xcfa";
                     FileUtils.writeFile(Objects.requireNonNull(getView()), fileToModify, editor.getText());
                     modified = false;
-                    XcfaRow.remove(fileToModify);
                     if (onSuccess != null) onSuccess.run();
                 }).setView(relativeLayout).show();
     }

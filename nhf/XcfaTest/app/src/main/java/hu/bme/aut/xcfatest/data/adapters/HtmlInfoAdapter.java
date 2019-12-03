@@ -9,12 +9,10 @@ import java.io.InputStreamReader;
 
 public class HtmlInfoAdapter {
 
-    private final static String INFO_HTML_PATH = "info.html";
-
-    public static String getHtmlText(Context context) {
+    public static String getHtmlText(Context context, String file) {
         String html;
         try {
-            InputStream is = context.getAssets().open(INFO_HTML_PATH);
+            InputStream is = context.getAssets().open(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line;
             StringBuilder htmlBuilder = new StringBuilder();

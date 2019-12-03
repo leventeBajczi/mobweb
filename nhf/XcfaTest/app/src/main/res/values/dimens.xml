@@ -4,4 +4,5 @@
     <dimen name="default_padding">4dp</dimen>
     <dimen name="text_h1">21sp</dimen>
     <dimen name="dialog_margin">16dp</dimen>
+    <dimen name="text_h3">16sp</dimen>
 </resources>
