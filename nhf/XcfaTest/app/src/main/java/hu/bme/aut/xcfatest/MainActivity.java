@@ -25,11 +25,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import hu.bme.aut.xcfatest.data.adapters.HtmlInfoAdapter;
 import hu.bme.aut.xcfatest.data.adapters.MyRecyclerViewAdapter;
 import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
 import hu.bme.aut.xcfatest.tasks.AsyncFiller;
+import hu.bme.aut.xcfatest.utils.ErrorHandler;
 
 public class MainActivity extends AppCompatActivity {
     private MyRecyclerViewAdapter mAdapter;
@@ -82,34 +84,29 @@ public class MainActivity extends AppCompatActivity {
                         String[] templates;
                         try {
                             templates = getAssets().list("templates");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            templates = new String[0];
-                        }
-                        if (templates != null && templates.length > 0) {
-                            spinner.setAdapter(
-                                    new ArrayAdapter<>(
-                                            getApplicationContext(),
-                                            android.R.layout.simple_spinner_dropdown_item,
-                                            templates)
-                            );
-                            MyDialogBuilder.getDialog(MainActivity.this,
-                                    R.string.which_template_question,
-                                    R.string.which_template_msg,
-                                    android.R.string.yes,
-                                    (dialogInterface1, i1) -> {
-                                        intent.putExtra("template", "templates" + File.separator + spinner.getSelectedItem());
-                                        startActivity(intent);
-                                    },
-                                    android.R.string.cancel,
-                                    null).setView(relativeLayout).show();
+                            if (Objects.requireNonNull(templates).length > 0) {
+                                spinner.setAdapter(
+                                        new ArrayAdapter<>(
+                                                getApplicationContext(),
+                                                android.R.layout.simple_spinner_dropdown_item,
+                                                templates)
+                                );
+                                MyDialogBuilder.getDialog(MainActivity.this,
+                                        R.string.which_template_question,
+                                        R.string.which_template_msg,
+                                        android.R.string.yes,
+                                        (dialogInterface1, i1) -> {
+                                            intent.putExtra("template", "templates" + File.separator + spinner.getSelectedItem());
+                                            startActivity(intent);
+                                        },
+                                        android.R.string.cancel,
+                                        null).setView(relativeLayout).show();
 
-                        } else {
-                            MyDialogBuilder.getDialog(MainActivity.this,
-                                    R.string.no_template,
-                                    R.string.no_template_msg,
-                                    android.R.string.yes,
-                                    null).show();
+                            } else {
+                                ErrorHandler.showErrorMessage(coordinatorLayout, "No templates found!");
+                            }
+                        } catch (IOException e) {
+                            ErrorHandler.showErrorMessage(coordinatorLayout, "Templates could not be read!", e);
                         }
                     },
                     R.string.empty,

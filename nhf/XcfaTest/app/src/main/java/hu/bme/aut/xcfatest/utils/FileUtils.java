@@ -22,7 +22,7 @@ public class FileUtils {
             writer.close();
             Snackbar.make(view, view.getContext().getString(R.string.saved_ok, fileToModify), Snackbar.LENGTH_SHORT).show();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorHandler.showErrorMessage(view, "There was a problem writing the file.", e);
         }
     }
 }

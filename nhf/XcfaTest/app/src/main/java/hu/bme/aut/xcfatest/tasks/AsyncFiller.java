@@ -7,6 +7,7 @@ import android.widget.ProgressBar;
 import hu.bme.aut.xcfatest.data.adapters.MyRecyclerViewAdapter;
 import hu.bme.aut.xcfatest.data.model.XcfaRow;
 import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
+import hu.bme.aut.xcfatest.utils.ErrorHandler;
 
 public class AsyncFiller extends AsyncTask<Void, XcfaRow, Void> {
     private final MyRecyclerViewAdapter adapter;
@@ -31,7 +32,7 @@ public class AsyncFiller extends AsyncTask<Void, XcfaRow, Void> {
                         XcfaAbstraction xcfa = XcfaAbstraction.fromStream(progressBar.getContext().openFileInput(fileName));
                         xcfaRow = new XcfaRow(fileName, true, xcfa.getVars(), xcfa.getThreads(), xcfa);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        ErrorHandler.showErrorMessage(progressBar, "File " + fileName + " could not be compiled!", e);
                         xcfaRow = new XcfaRow(fileName, false, 0, 0, null);
                     }
                     publishProgress(xcfaRow);

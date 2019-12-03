@@ -21,6 +21,7 @@ import hu.bme.aut.xcfatest.R;
 import hu.bme.aut.xcfatest.TestRunnerService;
 import hu.bme.aut.xcfatest.data.model.XcfaRow;
 import hu.bme.aut.xcfatest.thetacompat.XcfaAbstraction;
+import hu.bme.aut.xcfatest.utils.ErrorHandler;
 import hu.bme.aut.xcfatest.utils.MyBroadcastReceiver;
 
 public class RunFragment extends Fragment {
@@ -71,17 +72,19 @@ public class RunFragment extends Fragment {
         super.onResume();
         if (modified) {
             try {
-                XcfaAbstraction abstraction = XcfaAbstraction.fromStream(Objects.requireNonNull(getActivity().openFileInput(file)));
+                XcfaAbstraction abstraction = XcfaAbstraction.fromStream(Objects.requireNonNull(getActivity()).openFileInput(file));
                 row = new XcfaRow(file, true, abstraction.getVars(), abstraction.getThreads(), abstraction);
                 modified = false;
             } catch (Exception e) {
-                e.printStackTrace();
+                if (getView() != null)
+                    ErrorHandler.showErrorMessage(getView(), "File " + file + " could not be compiled!", e);
+                else e.printStackTrace();
                 row = new XcfaRow(file, false, 0, 0, null);
             }
         }
         filename.setText(row.getName());
         xcfaOk.setText(row.isOk() ? R.string.card_status_ok : R.string.card_status_error);
-        xcfaOk.setTextColor(row.isOk() ? getResources().getColor(R.color.ok, getActivity().getTheme()) : getResources().getColor(R.color.error, getActivity().getTheme()));
+        xcfaOk.setTextColor(row.isOk() ? getResources().getColor(R.color.ok, Objects.requireNonNull(getActivity()).getTheme()) : getResources().getColor(R.color.error, Objects.requireNonNull(getActivity()).getTheme()));
 
         noOfVars.setText(getString(R.string.card_var_display, row.getVars()));
         noOfThreads.setText(getString(R.string.card_thread_display, row.getThreads()));

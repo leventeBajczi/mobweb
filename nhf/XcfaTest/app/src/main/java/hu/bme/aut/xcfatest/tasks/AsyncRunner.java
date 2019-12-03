@@ -43,7 +43,10 @@ public class AsyncRunner extends Thread {
             applicationContext.sendBroadcast(intent);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Intent i = new Intent("XCFA_RESULTS_DONE");
+            i.putExtra("last", true);
+            i.putExtra("error", e.getMessage());
+            applicationContext.sendBroadcast(i);
         }
     }
 }

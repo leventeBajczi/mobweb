@@ -22,8 +22,7 @@ public class HtmlInfoAdapter {
             reader.close();
             html = htmlBuilder.toString();
         } catch (IOException e) {
-            e.printStackTrace();
-            html = "Asset could not be loaded.";
+            html = "Asset could not be loaded.\n" + e.getMessage();
         }
         return html;
     }

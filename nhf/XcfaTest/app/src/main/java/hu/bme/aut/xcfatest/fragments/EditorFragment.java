@@ -24,6 +24,7 @@ import java.util.Objects;
 import hu.bme.aut.xcfatest.R;
 import hu.bme.aut.xcfatest.data.model.XcfaRow;
 import hu.bme.aut.xcfatest.data.view.MyDialogBuilder;
+import hu.bme.aut.xcfatest.utils.ErrorHandler;
 import hu.bme.aut.xcfatest.utils.FileUtils;
 
 
@@ -47,7 +48,9 @@ public class EditorFragment extends Fragment {
                 try {
                     templateInputStream = getActivity().getAssets().open(template);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (container != null)
+                        ErrorHandler.showErrorMessage(container, "File could not be read!", e);
+                    else e.printStackTrace();
                 }
             }
             fileToModify = extras.getString("file");
@@ -64,7 +67,9 @@ public class EditorFragment extends Fragment {
             try {
                 templateInputStream = Objects.requireNonNull(getActivity()).openFileInput(fileToModify);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                if (getView() != null)
+                    ErrorHandler.showErrorMessage(getView(), "File not found!", e);
+                else e.printStackTrace();
             }
         }
         if (templateInputStream != null) {
@@ -77,7 +82,9 @@ public class EditorFragment extends Fragment {
                 bufferedReader.close();
                 text = builder.toString();
             } catch (IOException e) {
-                e.printStackTrace();
+                if (getView() != null)
+                    ErrorHandler.showErrorMessage(getView(), "File could not be read!", e);
+                else e.printStackTrace();
             }
         }
         editor.setText(text);

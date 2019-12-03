@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import java.io.FileNotFoundException;
 import java.util.Objects;
 
 import hu.bme.aut.xcfatest.tasks.AsyncRunner;
@@ -19,8 +18,11 @@ public class TestRunnerService extends Service {
             try {
                 AsyncRunner asyncRunner = new AsyncRunner(openFileInput(name), loops, getApplicationContext());
                 asyncRunner.start();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Intent i = new Intent("XCFA_RESULTS_DONE");
+                i.putExtra("last", true);
+                i.putExtra("error", e.getMessage());
+                getApplicationContext().sendBroadcast(i);
             }
         }
         return super.onStartCommand(intent, flags, startId);

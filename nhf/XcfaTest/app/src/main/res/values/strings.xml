@@ -31,4 +31,7 @@
     <string name="empty_name_error">Empty name, not saving!</string>
     <string name="number_of_executions">Number of executions:</string>
     <string name="_100">100</string>
+    <string name="details">Details</string>
+    <string name="error_dialog_title">Error details</string>
+    <string name="error_dialog_msg">The following error was generated:</string>
 </resources>

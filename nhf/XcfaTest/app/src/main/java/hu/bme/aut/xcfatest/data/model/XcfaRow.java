@@ -20,7 +20,7 @@ public class XcfaRow {
         this.vars = vars;
         this.threads = threads;
         this.xcfaAbstraction = xcfaAbstraction;
-        if (xcfaAbstraction != null) LUT.put(name, this);
+        LUT.put(name, this);
     }
 
     public static boolean exists(String fileName) {

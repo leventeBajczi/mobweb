@@ -17,6 +17,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Objects.requireNonNull(intent.getExtras()).getBoolean("last")) {
+            String error;
+            if ((error = Objects.requireNonNull(intent.getExtras()).getString("error")) != null)
+                ErrorHandler.showErrorMessage(result.getRootView(), "There was a problem running the test.", error);
             context.unregisterReceiver(this);
         } else if (started) {
             result.setText(new StringBuilder().append(result.getText()).append(intent.getExtras().getString("value")).toString());
