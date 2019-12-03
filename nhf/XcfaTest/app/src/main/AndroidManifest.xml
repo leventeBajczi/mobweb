@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="hu.bme.aut.xcfatest">
 
     <application
@@ -8,11 +9,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <service
             android:name=".TestRunnerService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name=".RunActivity"
@@ -27,6 +29,7 @@
             android:name=".EditorActivity"
             android:label="@string/title_activity_editor"
             android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

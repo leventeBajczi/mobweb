@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.EditorFragment"
+    android:background="@color/colorPrimaryLight"
     tools:showIn="@layout/activity_editor">
 
     <LinearLayout
@@ -14,6 +15,7 @@
 
         <EditText
             android:id="@+id/editor"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9"
@@ -23,6 +25,7 @@
             tools:ignore="LabelFor" />
 
         <LinearLayout
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

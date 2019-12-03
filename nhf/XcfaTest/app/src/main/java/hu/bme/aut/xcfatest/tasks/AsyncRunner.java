@@ -27,13 +27,14 @@ public class AsyncRunner extends Thread {
             for (int i = 0; i < loops; ++i) {
                 Map<XCFA.Process.Procedure, Map<String, Integer>> values = xcfaAbstraction.run();
                 StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Run #").append(i + 1).append(": ").append(System.lineSeparator());
                 int j = 0;
                 for (Map<String, Integer> stringIntegerMap : values.values()) {
-                    stringBuilder.append("Process #").append(j++).append(":").append(System.lineSeparator());
-                    stringIntegerMap.forEach((s, integer) -> stringBuilder.append("\t").append(s).append(": ").append(integer).append(System.lineSeparator()));
+                    stringBuilder.append("\tProcess #").append(j++).append(":").append(System.lineSeparator());
+                    stringIntegerMap.forEach((s, integer) -> stringBuilder.append("\t\t").append(s).append(": ").append(integer).append(System.lineSeparator()));
                 }
                 Intent intent = new Intent("XCFA_RESULTS_DONE");
-                intent.putExtra("value", stringBuilder.toString());
+                intent.putExtra("value", stringBuilder.append(System.lineSeparator()).toString());
                 applicationContext.sendBroadcast(intent);
             }
         } catch (Exception e) {

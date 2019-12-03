@@ -14,7 +14,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        result.setText(result.getText() + System.lineSeparator() + intent.getExtras().getString("value"));
+        result.setText(result.getText() + intent.getExtras().getString("value"));
 
     }
 }

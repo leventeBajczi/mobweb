@@ -29,4 +29,6 @@
     <string name="modify">Edit</string>
     <string name="saved_ok">Saved file %s</string>
     <string name="empty_name_error">Empty name, not saving!</string>
+    <string name="number_of_executions">Number of executions:</string>
+    <string name="_100">100</string>
 </resources>

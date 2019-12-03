@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
@@ -47,10 +49,9 @@ public class RunFragment extends Fragment {
         TextView noOfVars = Objects.requireNonNull(getActivity()).findViewById(R.id.no_of_vars);
         TextView noOfThreads = Objects.requireNonNull(getActivity()).findViewById(R.id.no_of_threads);
         TextView result = Objects.requireNonNull(getActivity()).findViewById(R.id.result);
-        Button button = Objects.requireNonNull(getActivity()).findViewById(R.id.run);
-        Button edit = Objects.requireNonNull(getActivity()).findViewById(R.id.modify);
-
-
+        FloatingActionButton button = Objects.requireNonNull(getActivity()).findViewById(R.id.run);
+        FloatingActionButton edit = Objects.requireNonNull(getActivity()).findViewById(R.id.modify);
+        EditText editText = Objects.requireNonNull(getActivity()).findViewById(R.id.loops);
 
         filename.setText(row.getName());
         xcfaOk.setText(row.isOk() ? R.string.card_status_ok : R.string.card_status_error);
@@ -63,7 +64,7 @@ public class RunFragment extends Fragment {
             Objects.requireNonNull(getContext()).registerReceiver(new MyBroadcastReceiver(result), new IntentFilter("XCFA_RESULTS_DONE"));
             Intent intent = new Intent(getContext(), TestRunnerService.class);
             intent.putExtra("filename", row.getName());
-            intent.putExtra("loops", 10);
+            intent.putExtra("loops", Integer.parseInt(editText.getText().toString()));
             Objects.requireNonNull(getContext()).startService(intent);
         });
         edit.setOnClickListener(view -> {

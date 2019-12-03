@@ -11,4 +11,5 @@
     <color name="error">#b71c1c</color>
     <color name="ok">#2e7d32</color>
     <color name="black">#000</color>
+    <color name="white">#fff</color>
 </resources>
