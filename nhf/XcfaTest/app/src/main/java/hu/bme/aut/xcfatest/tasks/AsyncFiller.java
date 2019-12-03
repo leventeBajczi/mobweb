@@ -22,6 +22,7 @@ public class AsyncFiller extends AsyncTask<Void, XcfaRow, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
+        progressBar.setAlpha(1.0f);
         for (String fileName : progressBar.getContext().fileList()) {
             if (fileName.endsWith(".xcfa")) {
                 if (XcfaRow.exists(fileName)) {
