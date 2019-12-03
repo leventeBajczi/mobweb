@@ -11,7 +11,10 @@
 <p>
     The XCFA formalism is parsed and an in-memory object is built representing it. Thereafter, this
     model is compiled into bytecode by a JIT compiler using VIXL as its backend, which is then
-    executed concurrently and execution results are displayed to the user.
+    executed concurrently and execution results are displayed to the user. It is important to use
+    actual compiled code rather than write an interpreter, as most concurrency issues arise when
+    executing instructions immediately after each other. An interpreter would introduce too much
+    overhead.
 </p>
 <h2>
     What is an XCFA?
