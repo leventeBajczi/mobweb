@@ -1,0 +1,33 @@
+var x : int
+main process mainProcess {
+    main procedure mainProcedure() {
+        var a : int
+        var b : int
+        init loc L0
+        loc L1
+        loc L2
+        loc L3
+        final loc END
+
+        L0 -> L1  { a := 1 }
+        L1 -> L2  { b := 2 }
+        L2 -> L3  { a -> x atomic @relaxed }
+        L3 -> END { b -> x atomic @relaxed }
+    }
+}
+process secondProcess{
+    main procedure mainProcedure() {
+        var a : int
+        var b : int
+        init loc L0
+        loc L1
+        loc L2
+        loc L3
+        final loc END
+
+        L0 -> L1 { a := 0 }
+        L1 -> L2 { b := 0 }
+        L2 -> L3 { a <- x atomic @relaxed }
+        L3 -> END { b <- x atomic @relaxed }
+    }
+}

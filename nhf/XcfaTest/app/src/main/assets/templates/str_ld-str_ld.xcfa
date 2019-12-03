@@ -10,9 +10,9 @@ main process mainProcess {
         final loc END
 
         L0 -> L1  { a := 1 }
-        L1 -> L2  { b := 2 }
+        L1 -> L2  { b := 0 }
         L2 -> L3  { a -> x atomic @relaxed }
-        L3 -> END { b -> x atomic @relaxed }
+        L3 -> END { b <- x atomic @relaxed }
     }
 }
 process secondProcess{
@@ -23,15 +23,11 @@ process secondProcess{
         loc L1
         loc L2
         loc L3
-        loc L4
         final loc END
-        error loc ERR
 
-        L0 -> L1 { a := 0 }
+        L0 -> L1 { a := 2 }
         L1 -> L2 { b := 0 }
-        L2 -> L3 { a <- x atomic @relaxed }
-        L3 -> L4 { b <- x atomic @relaxed }
-        L4 -> ERR { assume ( (a - b) = 1 ) }
-        L4 -> END { assume not ( (a - b) = 1 ) }
+        L2 -> L3 { a -> x atomic @relaxed }
+        L3 -> END { b <- x atomic @relaxed }
     }
 }

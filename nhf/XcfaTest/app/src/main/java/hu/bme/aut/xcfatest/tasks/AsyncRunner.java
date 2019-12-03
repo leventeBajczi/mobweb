@@ -35,8 +35,13 @@ public class AsyncRunner extends Thread {
                 }
                 Intent intent = new Intent("XCFA_RESULTS_DONE");
                 intent.putExtra("value", stringBuilder.append(System.lineSeparator()).toString());
+                intent.putExtra("last", false);
                 applicationContext.sendBroadcast(intent);
             }
+            Intent intent = new Intent("XCFA_RESULTS_DONE");
+            intent.putExtra("last", true);
+            applicationContext.sendBroadcast(intent);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
