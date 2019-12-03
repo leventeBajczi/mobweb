@@ -14,6 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.gc.materialdesign.views.ButtonFlat;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -103,8 +105,8 @@ public class EditorFragment extends Fragment {
             }
         });
 
-        TextView saveTv = getView().findViewById(R.id.save);
-        TextView discard = getView().findViewById(R.id.discard);
+        ButtonFlat saveTv = getView().findViewById(R.id.save);
+        ButtonFlat discard = getView().findViewById(R.id.discard);
         saveTv.setOnClickListener(view -> save(null));
         discard.setOnClickListener(view -> Objects.requireNonNull(getActivity()).onBackPressed());
     }
