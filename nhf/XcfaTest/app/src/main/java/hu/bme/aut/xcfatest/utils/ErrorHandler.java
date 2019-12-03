@@ -19,12 +19,12 @@ public class ErrorHandler {
                 setAction(
                         root.getContext().getString(R.string.details),
                         view -> {
-                            @SuppressLint("InflateParams") RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(root.getContext()).inflate(R.layout.dialog_content, null);
-                            TextView textView = new TextView(root.getContext());
+                            @SuppressLint("InflateParams") RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(root.getRootView().getContext()).inflate(R.layout.dialog_content, null);
+                            TextView textView = new TextView(root.getRootView().getContext());
                             textView.setText(e);
                             relativeLayout.addView(textView);
                             MyDialogBuilder.getDialog(
-                                    root.getContext(),
+                                    root.getRootView().getContext(),
                                     R.string.error_dialog_title,
                                     R.string.error_dialog_msg,
                                     android.R.string.yes,
