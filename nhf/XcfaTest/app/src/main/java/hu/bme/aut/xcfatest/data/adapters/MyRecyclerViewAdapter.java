@@ -16,32 +16,15 @@ import hu.bme.aut.xcfatest.R;
 import hu.bme.aut.xcfatest.data.listeners.XcfaRowListener;
 import hu.bme.aut.xcfatest.data.model.XcfaRow;
 
-/**
- * Adapter to be used for the RecyclerView declared in content_main.xml
- */
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
 
-    /**
-     * The data currently displayed.
-     */
     private List<XcfaRow> data;
 
-    /**
-     * Initialize the object. We don't take any values just yet, because we will update them
-     * asynchronously.
-     * @see hu.bme.aut.xcfatest.tasks.AsyncFiller
-     */
+
     public MyRecyclerViewAdapter() {
         this.data = new ArrayList<>();
     }
 
-    /**
-     * Creating the ViewHolder for later use.
-     *
-     * @param parent   The parent view to get the context from.
-     * @param viewType NC
-     * @return The ViewHolder holding a row, which has a CardView as its root layout element
-     */
     @NonNull
     @Override
     public MyRecyclerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,12 +38,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         return new MyViewHolder(v, listener, name, xcfaOk, noOfVars, noOfThreads);
     }
 
-    /**
-     * Filling in the data from an XcfaRow
-     *
-     * @param holder   The ViewHolder to be filled in
-     * @param position The position of the object to be displayed (to be looked up from data : XcfaRow [0..*])
-     */
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         XcfaRow xcfaRow = data.get(position);
@@ -74,24 +51,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     }
 
-    /**
-     * @return The number of items in the adapter.
-     */
     @Override
     public int getItemCount() {
         return data.size();
     }
 
-    /**
-     * This method clears the list of held elements.
-     */
     public void clear() {
         data.clear();
     }
 
-    /**
-     * The ViewHolder to be used for the adapter
-     */
     static class MyViewHolder extends RecyclerView.ViewHolder {
         private final CardView cardView;
         private final XcfaRowListener listener;
@@ -111,11 +79,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         }
     }
 
-    /**
-     * Add new data to the adapter
-     *
-     * @param newElement the new element to be added
-     */
     public void addData(XcfaRow newElement) {
         data.add(newElement);
         notifyDataSetChanged();
